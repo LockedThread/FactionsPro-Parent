@@ -1,4 +1,7 @@
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation(libs.paper)
+    implementation(libs.jetbrains_annotations)
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
 }

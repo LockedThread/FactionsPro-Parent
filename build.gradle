@@ -20,5 +20,7 @@ allprojects {
 }
 
 ext.libs = [
-        "paper" : "com.destroystokyo.paper:paper-api:1.14.2-R0.1-SNAPSHOT"
+        'paper'                : 'com.destroystokyo.paper:paper-api:1.14.2-R0.1-SNAPSHOT',
+        'jetbrains_annotations': 'org.jetbrains:annotations:17.0.0',
+        'lombok'               : 'org.projectlombok:lombok:1.18.8'
 ]
