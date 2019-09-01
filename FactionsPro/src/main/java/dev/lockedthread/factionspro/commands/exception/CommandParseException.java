@@ -8,13 +8,19 @@ import java.util.function.Consumer;
 
 public class CommandParseException extends Exception {
 
-    private Consumer<CommandSender> senderConsumer;
+    private final Consumer<CommandSender> senderConsumer;
 
     public CommandParseException(String argument, String parsableType) {
-        senderConsumer = sender -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FactionsPro.get().getConfig().getString("messages.default-unable-to-parse-argument")));
+        senderConsumer = sender -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', FactionsPro.get().getConfig().getString("messages.default-unable-to-parse-argument")
+                .replace("{argument}}", argument)
+                .replace("{type}", parsableType)));
     }
 
     public CommandParseException(String message) {
+        senderConsumer = sender -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    }
 
+    public Consumer<CommandSender> getSenderConsumer() {
+        return senderConsumer;
     }
 }
