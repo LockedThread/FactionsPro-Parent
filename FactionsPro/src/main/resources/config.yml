@@ -1,2 +1,2 @@
 messages:
-  default-unable-to-parse-argument: '&cUnable to parse "{argument}" as {typpe}'
+  default-unable-to-parse-argument: '&cUnable to parse "{argument}" as {type}'
