@@ -1,0 +1,20 @@
+allprojects {
+    println "Applying data to project with name \"" + project.name + "\""
+
+    if (!project.name.equalsIgnoreCase("FactionsPro-Parent")) {
+        // Maven data
+        group 'dev.lockedthread.factionspro'
+        version '1.0-SNAPSHOT'
+
+        // Java data
+        apply plugin: 'java'
+        sourceCompatibility = 1.8
+        repositories {
+            mavenCentral()
+            mavenLocal()
+        }
+        dependencies {
+            testCompile group: 'junit', name: 'junit', version: '4.12'
+        }
+    }
+}
