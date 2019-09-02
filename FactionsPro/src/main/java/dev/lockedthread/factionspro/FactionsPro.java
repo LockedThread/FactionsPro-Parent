@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro;
 
+import dev.lockedthread.factionspro.commands.FCommandRoot;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.modules.ModuleInfo;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ public class FactionsPro extends Module {
     @Override
     public void enable() {
         instance = this;
+        registerCommand(FCommandRoot.class);
     }
 
     @Override
