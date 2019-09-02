@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.commands.arguments;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -12,7 +13,8 @@ import java.util.UUID;
 public class ArgumentRegistry {
 
     private static ArgumentRegistry instance;
-    private HashMap<Class<?>, ArgumentParser<?>> argumentParserRegistry;
+    @Getter
+    private final HashMap<Class<?>, ArgumentParser<?>> argumentParserRegistry;
 
     private ArgumentRegistry() {
         this.argumentParserRegistry = new HashMap<>();
@@ -51,7 +53,7 @@ public class ArgumentRegistry {
         // Player
         register(Player.class, () -> s -> Optional.ofNullable(Bukkit.getPlayer(s)));
         // OfflinePlayer
-        register(OfflinePlayer.class, () -> s -> Optional.ofNullable(Bukkit.getOfflinePlayer(s)));
+        register(OfflinePlayer.class, () -> s -> Optional.of(Bukkit.getOfflinePlayer(s)));
         // UUID
         register(UUID.class, () -> s -> {
             try {
@@ -79,11 +81,15 @@ public class ArgumentRegistry {
         return instance == null ? instance = new ArgumentRegistry() : instance;
     }
 
-    public <T> Optional<T> parse(Class<T> tClass, String application) {
-        ArgumentParser<T> argumentParser = (ArgumentParser<T>) argumentParserRegistry.get(tClass);
-        return argumentParser.parse().apply(application);
+    @SuppressWarnings("unchecked")
+    private <T> ArgumentParser<T> getArgumentParser(Class<T> tClass) {
+        return (ArgumentParser<T>) argumentParserRegistry.get(tClass);
     }
 
+    public <T> Optional<T> parse(Class<T> tClass, String application) {
+        ArgumentParser<T> argumentParser = getArgumentParser(tClass);
+        return argumentParser.parse().apply(application);
+    }
 
     public void register(Class<?> aClass, ArgumentParser<?> argument) {
         if (argumentParserRegistry.putIfAbsent(aClass, argument) != null) {

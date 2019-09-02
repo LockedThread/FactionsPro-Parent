@@ -1,6 +1,8 @@
 package dev.lockedthread.factionspro.commands;
 
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
+import dev.lockedthread.factionspro.commands.context.CommandContext;
+import dev.lockedthread.factionspro.commands.context.ImmutableCommandContext;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,11 +33,31 @@ public abstract class FCommand {
     private final String[] aliases;
     private final boolean requirePlayer, requireConsole;
 
+    /**
+     * Temporarily field, not null when command is being processed.
+     */
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    public CommandContext commandContext;
+    @Nullable
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Map<String, FCommand> subCommands;
 
-    FCommand(Data data) {
+    public FCommand() {
+        Data data = getClass().getAnnotation(Data.class);
+        if (data != null) {
+            this.name = data.name();
+            this.permission = data.permission().isEmpty() ? null : data.permission();
+            this.aliases = data.aliases().length == 0 ? null : data.aliases();
+            this.requirePlayer = data.requirePlayer();
+            this.requireConsole = data.requireConsole();
+        } else {
+            throw new RuntimeException("Unable to find Data annotation for " + getClass().getName());
+        }
+    }
+
+    private FCommand(Data data) {
         this.name = data.name();
         this.permission = data.permission().isEmpty() ? null : data.permission();
         this.aliases = data.aliases().length == 0 ? null : data.aliases();
@@ -75,7 +97,7 @@ public abstract class FCommand {
         }
     }
 
-    public abstract void execute(CommandSender sender, String label, String[] arguments);
+    public abstract void execute();
 
     public boolean perform(CommandSender sender, String label, String[] arguments) {
         if (arguments.length > 0) {
@@ -88,9 +110,13 @@ public abstract class FCommand {
                 return false;
             }
         }
-
-        execute(sender, label, arguments);
-        return fCommandCheck(sender, this, true);
+        if (fCommandCheck(sender, this, true)) {
+            this.commandContext = new ImmutableCommandContext(sender, arguments, label);
+            execute();
+            this.commandContext = null;
+            return true;
+        }
+        return false;
     }
 
     public Map<String, FCommand> getSubCommands() {
