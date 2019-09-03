@@ -1,4 +1,4 @@
-package dev.lockedthread.factionspro.modules;
+package dev.lockedthread.factionspro.modules.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
