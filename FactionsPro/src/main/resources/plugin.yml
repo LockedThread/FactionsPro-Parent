@@ -1,0 +1,10 @@
+name: FactionsPro
+main: 'dev.lockedthread.factionspro.FactionsPro'
+version: '1.0-SNAPSHOT'
+authors: [LockedThread, Ultranite]
+description: 'A very optimized, efficient, clean factions plugin.'
+database: true
+permissions:
+  factionspro.*:
+    description: 'Gives access to all FactionsPro related permissions.'
+    default: op
