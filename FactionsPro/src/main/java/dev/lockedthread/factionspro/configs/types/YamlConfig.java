@@ -25,12 +25,16 @@ public class YamlConfig extends Config {
     @Override
     public void load() {
         this.yamlConfiguration = YamlConfiguration.loadConfiguration(getFile());
-        loadRunnable.run();
+        if (loadRunnable != null) {
+            loadRunnable.run();
+        }
     }
 
     @Override
     public void unload() {
-        unloadRunnable.run();
+        if (unloadRunnable != null) {
+            unloadRunnable.run();
+        }
         save();
     }
 
