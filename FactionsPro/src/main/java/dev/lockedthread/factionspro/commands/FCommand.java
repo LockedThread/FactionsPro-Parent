@@ -2,11 +2,12 @@ package dev.lockedthread.factionspro.commands;
 
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
-import dev.lockedthread.factionspro.commands.context.ImmutableCommandContext;
+import dev.lockedthread.factionspro.messages.IMessages;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -59,7 +60,7 @@ public abstract class FCommand {
         }
     }
 
-    private FCommand(Data data) {
+    public FCommand(Data data) {
         this.name = data.name();
         this.permission = data.permission().isEmpty() ? null : data.permission();
         this.aliases = data.aliases().length == 0 ? null : data.aliases();
@@ -89,9 +90,9 @@ public abstract class FCommand {
         return true;
     }
 
-    public static <T extends FCommand> T of(Class<T> tClass, Data data) {
+    public static <T extends FCommand> T of(Class<T> tClass) {
         try {
-            return tClass.getConstructor(Data.class).newInstance(data);
+            return tClass.getConstructor().newInstance();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Unable to find constructor for FCommand with single constructor parameter of @FCommand.Data", e);
         } catch (IllegalAccessException e) {
@@ -103,19 +104,21 @@ public abstract class FCommand {
 
     public abstract void execute();
 
-    public boolean perform(CommandSender sender, String label, String[] arguments) {
-        if (arguments.length > 0) {
+    public boolean perform(CommandContext commandContext) {
+        if (commandContext.getArguments().length > 0) {
             if (subCommands != null) {
-                FCommand subCommand = subCommands.get(arguments[0]);
-                if (fCommandCheck(sender, subCommand, true)) {
-                    subCommand.perform(sender, arguments[0], Arrays.copyOfRange(arguments, 0, arguments.length - 1));
+                FCommand subCommand = subCommands.get(commandContext.getArguments()[0]);
+                if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
+                    commandContext.setLabel(commandContext.getArguments()[0]);
+                    commandContext.setArguments(Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1));
+                    subCommand.perform(commandContext);
                     return true;
                 }
                 return false;
             }
         }
-        if (fCommandCheck(sender, this, true)) {
-            this.commandContext = new ImmutableCommandContext(sender, arguments, label);
+        if (fCommandCheck(commandContext.getSender(), this, true)) {
+            this.commandContext = commandContext;
             execute();
             this.commandContext = null;
             return true;
@@ -143,7 +146,25 @@ public abstract class FCommand {
     }
 
     public <T extends FCommand> void registerSubCommand(Class<T> tClass) {
-        registerSubCommand(of(tClass, tClass.getAnnotation(Data.class)));
+        registerSubCommand(of(tClass));
+    }
+
+    public void msg(String... messages) {
+        for (String message : messages) {
+            commandContext.getSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+        }
+    }
+
+    public void msg(Enum<? extends IMessages> iMessages) {
+        msg(((IMessages) iMessages).getMessage());
+    }
+
+    public void msg(Enum<? extends IMessages> iMessages, String... placeholders) {
+        String message = ((IMessages) iMessages).getMessage();
+        for (int i = 0; i < placeholders.length; i += 2) {
+            message = message.replace(placeholders[i], placeholders[i + 1]);
+        }
+        msg(message);
     }
 
     @Retention(RetentionPolicy.RUNTIME)

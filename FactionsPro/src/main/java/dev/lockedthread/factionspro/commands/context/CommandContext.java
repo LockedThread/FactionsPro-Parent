@@ -13,5 +13,9 @@ public interface CommandContext {
 
     String getLabel();
 
+    String getFullCommandString();
 
+    void setArguments(String[] arguments);
+
+    void setLabel(String label);
 }

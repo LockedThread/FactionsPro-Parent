@@ -1,7 +1,9 @@
 package dev.lockedthread.factionspro.commands.executor;
 
+import com.google.common.base.Joiner;
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.FCommand;
+import dev.lockedthread.factionspro.commands.context.ImmutableCommandContext;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.utils.CommandMapUtil;
 import org.bukkit.command.Command;
@@ -21,14 +23,16 @@ public class FCommandExecutor implements CommandExecutor {
     }
 
     public static FCommandExecutor get() {
-        return instance;
+        return instance == null ? instance = new FCommandExecutor() : instance;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        FCommand fCommand = fCommandMap.get(label);
+        int colonIndex = label.indexOf(":");
+        String realLabel = colonIndex != -1 ? label.substring(colonIndex + 1) : label;
+        FCommand fCommand = fCommandMap.get(realLabel);
         if (fCommand != null) {
-            return fCommand.perform(sender, label, args);
+            return fCommand.perform(new ImmutableCommandContext(sender, args, realLabel, "/" + label + " " + Joiner.on(" ").skipNulls().join(args)));
         }
         throw new RuntimeException("Unable to find registered FCommand even though it's registered to this executor");
     }
