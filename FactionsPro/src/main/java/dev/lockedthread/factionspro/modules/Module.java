@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 public abstract class Module extends JavaPlugin {
 
@@ -21,7 +22,9 @@ public abstract class Module extends JavaPlugin {
     @Override
     public void onEnable() {
         enable();
-        configSet.forEach(Config::load);
+        if (configSet != null) {
+            configSet.forEach(Config::load);
+        }
     }
 
     public void preDisable() {
@@ -30,21 +33,28 @@ public abstract class Module extends JavaPlugin {
     @Override
     public void onDisable() {
         preDisable();
+        if (configSet != null) {
+            configSet.forEach(Config::unload);
+        }
         disable();
-        configSet.forEach(Config::unload);
     }
 
     public abstract void enable();
 
     public abstract void disable();
 
+    public void log(Object... objects) {
+        for (Object object : objects) {
+            getLogger().log(Level.INFO, object.toString());
+        }
+    }
+
     public void registerConfigs(@NotNull Config... configs) {
         (configSet == null ? configSet = new HashSet<>() : configSet).addAll(Arrays.asList(configs));
     }
 
     public <T extends FCommand> void registerCommand(Class<T> fCommandClass) {
-        FCommand fCommand = FCommand.of(fCommandClass, fCommandClass.getAnnotation(FCommand.Data.class));
-        FCommandExecutor.get().registerCommand(this, fCommand);
+        FCommandExecutor.get().registerCommand(this, FCommand.of(fCommandClass));
     }
 
     public void registerCommand(FCommand fCommand) {

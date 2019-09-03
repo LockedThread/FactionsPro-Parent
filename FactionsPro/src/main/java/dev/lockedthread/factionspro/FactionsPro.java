@@ -1,14 +1,16 @@
 package dev.lockedthread.factionspro;
 
 import dev.lockedthread.factionspro.commands.FCommandRoot;
+import dev.lockedthread.factionspro.configs.types.YamlConfig;
 import dev.lockedthread.factionspro.modules.Module;
-import dev.lockedthread.factionspro.modules.ModuleInfo;
+import dev.lockedthread.factionspro.modules.annotations.ModuleInfo;
 import org.jetbrains.annotations.NotNull;
 
 @ModuleInfo(name = "FactionsPro")
 public class FactionsPro extends Module {
 
     private static FactionsPro instance;
+    private YamlConfig mainConfig;
 
     @NotNull
     public static FactionsPro get() {
@@ -19,6 +21,13 @@ public class FactionsPro extends Module {
     public void enable() {
         instance = this;
         registerCommand(FCommandRoot.class);
+        registerConfigs(this.mainConfig = new YamlConfig(this, "config.yml", true));
+        mainConfig.onLoad(() -> {
+            log("Called YamlConfig#onLoad");
+        });
+        mainConfig.onUnload(() -> {
+            log("Called YamlConfig#onUnload");
+        });
     }
 
     @Override
