@@ -28,7 +28,7 @@ public abstract class FCommand {
     @NotNull
     private final String name;
     @Nullable
-    private final String permission;
+    private final String permission, description, usage;
     @Nullable
     private final String[] aliases;
     private final boolean requirePlayer, requireConsole;
@@ -52,6 +52,8 @@ public abstract class FCommand {
             this.aliases = data.aliases().length == 0 ? null : data.aliases();
             this.requirePlayer = data.requirePlayer();
             this.requireConsole = data.requireConsole();
+            this.usage = data.usage().isEmpty() ? null : data.usage();
+            this.description = data.description().isEmpty() ? null : data.description();
         } else {
             throw new RuntimeException("Unable to find Data annotation for " + getClass().getName());
         }
@@ -63,6 +65,8 @@ public abstract class FCommand {
         this.aliases = data.aliases().length == 0 ? null : data.aliases();
         this.requirePlayer = data.requirePlayer();
         this.requireConsole = data.requireConsole();
+        this.usage = data.usage();
+        this.description = data.description();
     }
 
     private static boolean fCommandCheck(CommandSender sender, FCommand fCommand, boolean sendMessage) {
@@ -151,6 +155,10 @@ public abstract class FCommand {
         String permission() default "";
 
         String[] aliases() default {};
+
+        String usage() default "";
+
+        String description() default "";
 
         boolean requirePlayer() default false;
 

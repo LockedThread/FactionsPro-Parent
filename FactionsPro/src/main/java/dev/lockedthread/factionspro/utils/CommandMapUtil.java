@@ -84,6 +84,12 @@ public class CommandMapUtil {
             if (fCommand.getPermission() != null) {
                 pluginCommand.setPermission(fCommand.getPermission());
             }
+            if (fCommand.getUsage() != null) {
+                pluginCommand.setUsage(fCommand.getUsage());
+            }
+            if (fCommand.getDescription() != null) {
+                pluginCommand.setDescription(fCommand.getDescription());
+            }
             pluginCommand.setExecutor(FCommandExecutor.get());
             return pluginCommand;
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
