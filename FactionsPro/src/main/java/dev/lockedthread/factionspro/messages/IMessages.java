@@ -6,4 +6,7 @@ public interface IMessages {
 
     String getMessage();
 
+    String getUnformattedMessage();
+
+    void setMessage(String message);
 }
