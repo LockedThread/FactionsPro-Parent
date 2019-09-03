@@ -9,6 +9,6 @@ public class FCommandHelp extends FCommand {
 
     @Override
     public void execute() {
-
+        msg("&cYou have executed " + commandContext.getFullCommandString());
     }
 }

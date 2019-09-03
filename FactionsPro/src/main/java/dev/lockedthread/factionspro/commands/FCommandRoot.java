@@ -10,7 +10,7 @@ public class FCommandRoot extends FCommand {
 
     @Override
     public void execute() {
-        msg("&cYou have executed /" + commandContext.getLabel());
+        msg("&cYou have executed " + commandContext.getFullCommandString());
     }
 
 }
