@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.commands;
 
+@FCommand.Data(name = "factions", aliases = {"f", "faction"}, permission = "factionspro.commands.root", usage = "/f", description = "The root factions command")
 public class FCommandRoot extends FCommand {
 
     public FCommandRoot() {
@@ -9,7 +10,7 @@ public class FCommandRoot extends FCommand {
 
     @Override
     public void execute() {
-
+        msg("&cYou have executed /" + commandContext.getLabel());
     }
 
 }
