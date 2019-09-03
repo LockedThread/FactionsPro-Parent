@@ -1,6 +1,7 @@
 package dev.lockedthread.factionspro.commands;
 
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
+import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
 import dev.lockedthread.factionspro.messages.IMessages;
 import lombok.AccessLevel;
@@ -102,7 +103,7 @@ public abstract class FCommand {
         }
     }
 
-    public abstract void execute();
+    public abstract void execute() throws ArgumentParseException;
 
     public boolean perform(CommandContext commandContext) {
         if (commandContext.getArguments().length > 0) {
@@ -119,7 +120,11 @@ public abstract class FCommand {
         }
         if (fCommandCheck(commandContext.getSender(), this, true)) {
             this.commandContext = commandContext;
-            execute();
+            try {
+                execute();
+            } catch (ArgumentParseException e) {
+                e.getSenderConsumer().accept(commandContext.getSender());
+            }
             this.commandContext = null;
             return true;
         }
