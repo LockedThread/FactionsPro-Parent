@@ -1,6 +1,7 @@
 package dev.lockedthread.factionspro.configs.types;
 
 import dev.lockedthread.factionspro.configs.Config;
+import dev.lockedthread.factionspro.messages.IMessages;
 import dev.lockedthread.factionspro.modules.Module;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +42,17 @@ public class YamlConfig extends Config {
     public YamlConfig onUnload(Runnable onUnload) {
         this.unloadRunnable = onUnload;
         return this;
+    }
+
+    public void loadMessageConfig(Class<? extends IMessages> iMessagesClass) {
+        for (IMessages messageEnum : iMessagesClass.getEnumConstants()) {
+            if (isSet("messages." + messageEnum.getConfigKey())) {
+                messageEnum.setMessage(getString("messages." + messageEnum.getConfigKey()));
+            } else {
+                set("messages." + messageEnum.getConfigKey(), messageEnum.getUnformattedMessage());
+            }
+        }
+        save();
     }
 
     public void save() {
