@@ -1,6 +1,8 @@
-package dev.lockedthread.factionspro.commands.arguments;
+package dev.lockedthread.factionspro.commands.arguments.types;
 
-import dev.lockedthread.factionspro.commands.exception.CommandParseException;
+import dev.lockedthread.factionspro.commands.arguments.Argument;
+import dev.lockedthread.factionspro.commands.arguments.ArgumentRegistry;
+import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,15 +18,15 @@ public class ImmutableArgument<T> implements Argument<T> {
     private final Class<T> tClass;
 
     @Override
-    public T forceParse(String message) throws CommandParseException {
+    public T forceParse(String message) throws ArgumentParseException {
         Optional<T> parse = parse();
         if (parse.isPresent()) {
             return parse.get();
         }
         if (message == null) {
-            throw new CommandParseException(argument, tClass.getSimpleName());
+            throw new ArgumentParseException(argument, tClass.getSimpleName());
         } else {
-            throw new CommandParseException(message);
+            throw new ArgumentParseException(message);
         }
     }
 
