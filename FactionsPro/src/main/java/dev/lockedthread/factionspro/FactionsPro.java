@@ -27,8 +27,7 @@ public class FactionsPro extends Module {
         instance = this;
         registerCommand(FCommandRoot.class);
         YamlConfig messagesConfig = new YamlConfig(this, "messages.yml", false);
-        messagesConfig.loadMessageConfig(FactionsMessages.class);
-        registerConfigs((this.mainConfig = new FactionsConfig(this, "config.yml", false)), messagesConfig);
+        registerConfigs((this.mainConfig = new FactionsConfig(this, "config.yml", false)), messagesConfig.onLoad(() -> messagesConfig.loadMessageConfig(FactionsMessages.class)));
     }
 
     @Override
