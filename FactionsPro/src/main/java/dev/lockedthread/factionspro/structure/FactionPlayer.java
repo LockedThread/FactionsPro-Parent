@@ -2,8 +2,7 @@ package dev.lockedthread.factionspro.structure;
 
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.structure.enums.Role;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -12,8 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 public class FactionPlayer {
 
     private transient Faction faction;

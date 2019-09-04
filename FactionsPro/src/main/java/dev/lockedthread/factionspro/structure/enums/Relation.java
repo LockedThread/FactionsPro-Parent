@@ -2,11 +2,13 @@ package dev.lockedthread.factionspro.structure.enums;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+@ToString
 @Getter
 public enum Relation {
 
@@ -38,6 +40,4 @@ public enum Relation {
         }
         return defaultRelation;
     }
-
-
 }
