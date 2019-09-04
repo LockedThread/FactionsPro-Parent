@@ -35,7 +35,7 @@ public class YamlConfig extends Config {
         if (unloadRunnable != null) {
             unloadRunnable.run();
         }
-        save();
+        //save();
     }
 
     public YamlConfig onLoad(Runnable onLoad) {
