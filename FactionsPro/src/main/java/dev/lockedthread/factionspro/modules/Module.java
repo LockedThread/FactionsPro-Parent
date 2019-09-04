@@ -4,7 +4,6 @@ import dev.lockedthread.factionspro.commands.FCommand;
 import dev.lockedthread.factionspro.commands.executor.FCommandExecutor;
 import dev.lockedthread.factionspro.configs.Config;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,16 +14,13 @@ import java.util.logging.Level;
 
 public abstract class Module extends JavaPlugin {
 
-    @Getter
-    @Setter
-    private Set<Config> configSet;
+    @Getter(lazy = true)
+    private final Set<Config> configSet = new HashSet<>();
 
     @Override
     public void onEnable() {
         enable();
-        if (configSet != null) {
-            configSet.forEach(Config::load);
-        }
+        getConfigSet().forEach(Config::load);
     }
 
     public void preDisable() {
@@ -33,9 +29,7 @@ public abstract class Module extends JavaPlugin {
     @Override
     public void onDisable() {
         preDisable();
-        if (configSet != null) {
-            configSet.forEach(Config::unload);
-        }
+        getConfigSet().forEach(Config::unload);
         disable();
     }
 
@@ -50,7 +44,7 @@ public abstract class Module extends JavaPlugin {
     }
 
     public void registerConfigs(@NotNull Config... configs) {
-        (configSet == null ? configSet = new HashSet<>() : configSet).addAll(Arrays.asList(configs));
+        getConfigSet().addAll(Arrays.asList(configs));
     }
 
     public <T extends FCommand> void registerCommand(Class<T> fCommandClass) {

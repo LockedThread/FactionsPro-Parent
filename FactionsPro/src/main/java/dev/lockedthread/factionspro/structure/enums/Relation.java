@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.ChatColor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -18,7 +17,8 @@ public enum Relation {
     NEUTRAL(ChatColor.WHITE, true, true),
     TRUCE(ChatColor.AQUA, true, false);
 
-    private static Relation defaultRelation;
+    @Getter(lazy = true)
+    private static final Relation defaultRelation = Arrays.stream(values()).filter(Relation::is_default).findFirst().orElse(MEMBER);
 
     @Setter
     private ChatColor chatColor;
@@ -31,13 +31,5 @@ public enum Relation {
         this.chatColor = chatColor;
         this.enabled = enabled;
         this._default = _default;
-    }
-
-    @NotNull
-    public static Relation getDefaultRelation() {
-        if (defaultRelation == null) {
-            defaultRelation = Arrays.stream(values()).filter(Relation::is_default).findFirst().orElse(MEMBER);
-        }
-        return defaultRelation;
     }
 }
