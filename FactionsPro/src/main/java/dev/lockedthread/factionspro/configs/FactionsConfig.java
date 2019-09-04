@@ -1,6 +1,5 @@
 package dev.lockedthread.factionspro.configs;
 
-import com.google.common.base.Joiner;
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.annotations.ConfigEntry;
 import dev.lockedthread.factionspro.configs.serializer.Serializer;
@@ -102,7 +101,8 @@ public class FactionsConfig extends YamlConfig {
         Field[] fields = FactionsConfig.this.getClass().getFields();
         boolean setupComments = false;
         for (Field field : fields) {
-            String key = field.getName().contains("_") ? Joiner.on(".").skipNulls().join(field.getName().split("_")) : field.getName();
+            String key = field.getName().replace("_", ".");
+            //String key = field.getName().contains("_") ? Joiner.on(".").skipNulls().join(field.getName().split("_")) : field.getName();
             try {
                 field.setAccessible(true);
                 Serializer serializer = null;
