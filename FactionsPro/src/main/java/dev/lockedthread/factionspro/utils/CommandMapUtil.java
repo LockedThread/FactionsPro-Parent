@@ -20,20 +20,21 @@ public class CommandMapUtil {
 
     private static CommandMapUtil instance;
 
-    private static Field commandMap;
-    private static Constructor<PluginCommand> commandConstructor;
+    private final Field commandMap;
+    private final Constructor<PluginCommand> commandConstructor;
 
-    private CommandMapUtil() {
-        try {
-            (commandMap = SimplePluginManager.class.getDeclaredField("commandMap")).setAccessible(true);
-            (commandConstructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class)).setAccessible(true);
-        } catch (NoSuchFieldException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+    private CommandMapUtil() throws NoSuchFieldException, NoSuchMethodException {
+        (commandMap = SimplePluginManager.class.getDeclaredField("commandMap")).setAccessible(true);
+        (commandConstructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class)).setAccessible(true);
     }
 
     public static CommandMapUtil getInstance() {
-        return instance == null ? instance = new CommandMapUtil() : instance;
+        try {
+            return instance == null ? instance = new CommandMapUtil() : instance;
+        } catch (NoSuchFieldException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return instance;
     }
 
     public void unregisterCommand(String s) {
@@ -45,7 +46,7 @@ public class CommandMapUtil {
 
     public void unregisterCommands(Plugin plugin) {
         final CommandMap commandMap = getCommandMap();
-        for (Command command : getCommandMap().getKnownCommands().values()) {
+        for (Command command : commandMap.getKnownCommands().values()) {
             PluginCommand pluginCommand = Bukkit.getPluginCommand(command.getName());
             if (pluginCommand != null && pluginCommand.getPlugin().getName().equals(plugin.getName())) {
                 command.unregister(commandMap);
