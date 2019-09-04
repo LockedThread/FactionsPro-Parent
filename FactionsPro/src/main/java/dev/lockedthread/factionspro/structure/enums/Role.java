@@ -10,8 +10,7 @@ public enum Role {
 
     LEADER(3, "Leader", "**"), CO_LEADER(2, "Co-Leader", "*"), MODERATOR(1, "Moderator", "+"), MEMBER(0, "Member", "-");
 
-    @Setter
-    private int rank;
+    private final int rank;
     @Setter
     private String name, icon;
 
