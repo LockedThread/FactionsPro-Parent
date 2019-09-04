@@ -1,16 +1,15 @@
 package dev.lockedthread.factionspro.structure;
 
+import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
 import dev.lockedthread.factionspro.structure.position.ChunkPosition;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class Faction {
-
 
     private final int id;
 
@@ -21,6 +20,8 @@ public class Faction {
 
     private String name;
 
+    private Map<Integer, Relation> relationMap;
+
     public Faction(int id, String name, FactionPlayer leader) {
         this.id = id;
         this.name = name;
@@ -28,6 +29,7 @@ public class Faction {
         (this.factionPlayerSet = new HashSet<>(1)).add(leader);
     }
 
+    @NotNull
     public Set<FactionPlayer> getFactionPlayers(Role role) {
         if (factionPlayerSet.size() == 1) {
             return role == Role.LEADER ? factionPlayerSet : Collections.emptySet();
@@ -42,6 +44,24 @@ public class Faction {
             }
         }
         return set == null ? Collections.emptySet() : set;
+    }
+
+    @NotNull
+    public Relation getRelation(Faction faction) {
+        if (faction == null || relationMap == null) {
+            return Relation.getDefaultRelation();
+        }
+        return relationMap.getOrDefault(faction.getId(), Relation.getDefaultRelation());
+    }
+
+    @NotNull
+    public Relation getRelation(FactionPlayer factionPlayer) {
+        return getRelation(factionPlayer.getFaction());
+    }
+
+    @NotNull
+    public Map<Integer, Relation> getRelationMap() {
+        return relationMap == null ? this.relationMap = new HashMap<>() : relationMap;
     }
 
 
