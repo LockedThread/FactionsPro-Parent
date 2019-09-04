@@ -22,4 +22,15 @@ public class WorldMatrix {
     public void sendFactionMap(Player player) {
 
     }
+
+    public ChunkPosition[][] getNearbyWorldMatrix(ChunkPosition center, int radius) {
+        final ChunkPosition[][] chunkPositions = new ChunkPosition[radius * 2 + 1][radius * 2 + 1];
+        for (int x = -radius; x < radius; x++) {
+            for (int z = -radius; z < radius; z++) {
+                chunkPositions[x][z] = new ChunkPosition(center.getWorld(), center.getX() + x, center.getZ() + z);
+            }
+        }
+        return chunkPositions;
+    }
+
 }
