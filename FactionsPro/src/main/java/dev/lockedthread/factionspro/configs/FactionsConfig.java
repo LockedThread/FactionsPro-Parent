@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 
 public class FactionsConfig extends YamlConfig {
 
@@ -35,7 +34,7 @@ public class FactionsConfig extends YamlConfig {
     @ConfigEntry(comments = {"Whether or not players can have negative power"}, key = "players.power.allow-negative")
     public static boolean players_power_allowNegative = false;
     @ConfigEntry(comments = {"Whether or not players lose power when they die"})
-    
+
     public static boolean players_power_death_loose = false;
     @ConfigEntry(comments = {"How much power players lose when they die"})
     public static double players_power_death_amount = 1.0;
@@ -108,32 +107,23 @@ public class FactionsConfig extends YamlConfig {
                 field.setAccessible(true);
                 if (isSet(key)) {
                     field.set(null, get(key));
-                    System.out.println("setting field " + field.getName() + " - config key: " + key + " with value of " + get(key));
                 } else {
-                    Object value = field.get(null);
-                    System.out.println("setting config entry of " + field.getName() + " - config key: " + key + " with value of " + value);
-
                     ConfigEntry configEntry = getConfigEntry(field);
                     if (configEntry != null) {
                         if (!configEntry.key().isEmpty()) {
                             key = configEntry.key();
                         }
-                        System.out.println("key = " + key);
                         int lastIndexOfColon = key.lastIndexOf(".");
-                        System.out.println("lastIndexOfColon = " + lastIndexOfColon);
                         String sectionString = lastIndexOfColon == -1 ? COMMENT_SECRET + key : key.substring(0, lastIndexOfColon + 1) + COMMENT_SECRET + key.substring(lastIndexOfColon + 1);
-                        System.out.println("sectionString = " + sectionString);
-
 
                         String[] comments = configEntry.comments();
-                        System.out.println("comments = " + Arrays.toString(comments));
                         for (int i = 0; i < comments.length; i++) {
                             set(sectionString + i, comments[i]);
                         }
                         setupComments = true;
                     }
+                    Object value = field.get(null);
                     Serializer serializer = SerializerRegistry.get().getSerializer(value.getClass());
-
                     if (serializer != null) {
                         ConfigurationSection section = isSet(key) && isConfigurationSection(key) ? getConfigurationSection(key) : createSection(key);
                         serializer.serialize(section, value);
@@ -153,8 +143,7 @@ public class FactionsConfig extends YamlConfig {
                     String spaces = getSpaces(line);
                     boolean startsWith = line.startsWith(spaces + COMMENT_SECRET);
                     if (startsWith) {
-                        line = spaces + line.replaceFirst(line.substring(0, line.indexOf(":") + 1), "#");
-                        lines[i] = line;
+                        lines[i] = spaces + line.replaceFirst(line.substring(0, line.indexOf(":") + 1), "#");
                     }
                 }
                 try (FileWriter writer = new FileWriter(getFile())) {
