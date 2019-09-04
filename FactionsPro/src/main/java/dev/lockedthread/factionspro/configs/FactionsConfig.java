@@ -105,8 +105,22 @@ public class FactionsConfig extends YamlConfig {
             String key = field.getName().contains("_") ? Joiner.on(".").skipNulls().join(field.getName().split("_")) : field.getName();
             try {
                 field.setAccessible(true);
+                Serializer serializer = null;
+                Object value = null;
+                if (!field.getType().isPrimitive()) {
+                    value = field.get(null);
+                    serializer = SerializerRegistry.get().getSerializer(value.getClass());
+                }
                 if (isSet(key)) {
-                    field.set(null, get(key));
+                    if (serializer != null) {
+                        ConfigEntry configEntry = getConfigEntry(field);
+                        if (configEntry != null && !configEntry.key().isEmpty()) {
+                            key = configEntry.key();
+                        }
+                        field.set(null, serializer.deserialize(getConfigurationSection(key)));
+                    } else {
+                        field.set(null, get(key));
+                    }
                 } else {
                     ConfigEntry configEntry = getConfigEntry(field);
                     if (configEntry != null) {
@@ -122,19 +136,20 @@ public class FactionsConfig extends YamlConfig {
                         }
                         setupComments = true;
                     }
-                    Object value = field.get(null);
-                    Serializer serializer = SerializerRegistry.get().getSerializer(value.getClass());
+
                     if (serializer != null) {
                         ConfigurationSection section = isSet(key) && isConfigurationSection(key) ? getConfigurationSection(key) : createSection(key);
                         serializer.serialize(section, value);
-                    } else {
-                        set(key, value);
+                        continue;
+
                     }
+                    set(key, value);
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("This shouldn't be thrown, report this to LockedThread immediately", e);
             }
         }
+
         if (setupComments) {
             try {
                 String[] lines = getYamlConfiguration().saveToString().split("\n");
