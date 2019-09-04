@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ConfigComment {
+public @interface ConfigEntry {
 
-    String[] comment();
+    String[] comments();
+
+    String key() default "";
 }

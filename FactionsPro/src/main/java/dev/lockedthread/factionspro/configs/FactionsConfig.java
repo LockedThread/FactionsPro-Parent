@@ -2,7 +2,7 @@ package dev.lockedthread.factionspro.configs;
 
 import com.google.common.base.Joiner;
 import dev.lockedthread.factionspro.FactionsPro;
-import dev.lockedthread.factionspro.configs.annotations.ConfigComment;
+import dev.lockedthread.factionspro.configs.annotations.ConfigEntry;
 import dev.lockedthread.factionspro.configs.types.YamlConfig;
 import dev.lockedthread.factionspro.modules.Module;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,15 +16,15 @@ import java.lang.reflect.Field;
 public class FactionsConfig extends YamlConfig {
 
     private static final String COMMENT_SECRET = "COMMENT_";
-    @ConfigComment(comment = {"The player's starting power", "line 2", "line 3"})
+    @ConfigEntry(comments = {"The player's starting power", "line 2", "line 3"})
     public static double players_power_starting = 20.0;
-    @ConfigComment(comment = {"The maximum amount of power a player can have", "line 2", "line 3"})
+    @ConfigEntry(comments = {"The maximum amount of power a player can have", "line 2", "line 3"})
     public static double players_power_maximum = 20.0;
-    @ConfigComment(comment = {"The minimum amount of power a player can have", "line 2", "line 3"})
+    @ConfigEntry(comments = {"The minimum amount of power a player can have", "line 2", "line 3"})
     public static double players_power_minimum = 0.0;
-    @ConfigComment(comment = {"Whether or not players start with 0 power", "line 2", "line 3"})
+    @ConfigEntry(comments = {"Whether or not players start with 0 power", "line 2", "line 3"}, key = "players.power.start-with-none")
     public static boolean players_power_startWithNone = false;
-    @ConfigComment(comment = {"Whether or not players can have negative power", "line 2", "line 3"})
+    @ConfigEntry(comments = {"Whether or not players can have negative power", "line 2", "line 3"}, key = "players.power.allow-negative")
     public static boolean players_power_allowNegative = false;
     @Nullable
     private static FactionsConfig instance;
@@ -50,9 +50,8 @@ public class FactionsConfig extends YamlConfig {
     }
 
     @Nullable
-    private static String[] getConfigComment(Field field) {
-        ConfigComment configComment = field.getAnnotation(ConfigComment.class);
-        return configComment != null ? configComment.comment() : null;
+    private static ConfigEntry getConfigEntry(Field field) {
+        return field.getAnnotation(ConfigEntry.class);
     }
 
     @NotNull
@@ -77,12 +76,14 @@ public class FactionsConfig extends YamlConfig {
                     System.out.println("setting field " + field.getName() + " - config key: " + key + " with value of " + get(key));
                 } else {
                     System.out.println("setting config entry of " + field.getName() + " - config key: " + key + " with value of " + field.get(null));
-                    @Nullable String[] configComment = getConfigComment(field);
-                    if (configComment != null) {
+                    ConfigEntry configEntry = getConfigEntry(field);
+                    if (configEntry != null) {
+                        key = configEntry.key();
+                        String[] comments = configEntry.comments();
                         int lastIndexOfColon = key.lastIndexOf(".");
                         String section = lastIndexOfColon == -1 ? COMMENT_SECRET : key.substring(0, lastIndexOfColon + 1) + COMMENT_SECRET + key.substring(lastIndexOfColon + 1);
-                        for (int i = 0; i < configComment.length; i++) {
-                            set(section + i, configComment[i]);
+                        for (int i = 0; i < comments.length; i++) {
+                            set(section + i, comments[i]);
                         }
                     }
                     set(key, field.get(null));
