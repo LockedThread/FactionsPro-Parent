@@ -50,6 +50,7 @@ public class SerializerRegistry {
             public void serialize(ConfigurationSection section, Relation relation) {
                 section.set("color", relation.getChatColor().name());
                 section.set("enabled", relation.isEnabled());
+                section.set("default", relation.is_default());
             }
 
             @Override
@@ -57,6 +58,7 @@ public class SerializerRegistry {
                 Relation relation = Relation.valueOf(section.getName().toUpperCase());
                 relation.setChatColor(ChatColor.valueOf(Objects.requireNonNull(section.getString("color")).toUpperCase()));
                 relation.setEnabled(section.getBoolean("enabled"));
+                relation.set_default(section.getBoolean("default"));
                 return relation;
             }
         });
