@@ -1,8 +1,8 @@
 package dev.lockedthread.factionspro.commands.arguments.types;
 
 import dev.lockedthread.factionspro.commands.arguments.Argument;
-import dev.lockedthread.factionspro.commands.arguments.ArgumentRegistry;
 import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
+import dev.lockedthread.factionspro.commands.arguments.registry.ArgumentRegistry;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

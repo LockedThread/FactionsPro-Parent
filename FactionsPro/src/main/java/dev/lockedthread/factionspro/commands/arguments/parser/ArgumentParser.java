@@ -1,4 +1,4 @@
-package dev.lockedthread.factionspro.commands.arguments;
+package dev.lockedthread.factionspro.commands.arguments.parser;
 
 import java.util.Optional;
 import java.util.function.Function;

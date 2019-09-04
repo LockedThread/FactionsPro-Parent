@@ -1,7 +1,8 @@
-package dev.lockedthread.factionspro.commands.context;
+package dev.lockedthread.factionspro.commands.context.types;
 
 import dev.lockedthread.factionspro.commands.arguments.Argument;
 import dev.lockedthread.factionspro.commands.arguments.types.ImmutableArgument;
+import dev.lockedthread.factionspro.commands.context.CommandContext;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

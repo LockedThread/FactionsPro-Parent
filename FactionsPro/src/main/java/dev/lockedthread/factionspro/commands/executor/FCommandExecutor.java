@@ -3,7 +3,7 @@ package dev.lockedthread.factionspro.commands.executor;
 import com.google.common.base.Joiner;
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.FCommand;
-import dev.lockedthread.factionspro.commands.context.ImmutableCommandContext;
+import dev.lockedthread.factionspro.commands.context.types.ImmutableCommandContext;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.utils.CommandMapUtil;
 import org.bukkit.command.Command;

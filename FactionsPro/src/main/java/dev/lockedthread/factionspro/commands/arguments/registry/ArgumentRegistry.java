@@ -1,5 +1,6 @@
-package dev.lockedthread.factionspro.commands.arguments;
+package dev.lockedthread.factionspro.commands.arguments.registry;
 
+import dev.lockedthread.factionspro.commands.arguments.parser.ArgumentParser;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

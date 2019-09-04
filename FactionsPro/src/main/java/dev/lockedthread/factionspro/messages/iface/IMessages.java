@@ -1,4 +1,4 @@
-package dev.lockedthread.factionspro.messages;
+package dev.lockedthread.factionspro.messages.iface;
 
 public interface IMessages {
 

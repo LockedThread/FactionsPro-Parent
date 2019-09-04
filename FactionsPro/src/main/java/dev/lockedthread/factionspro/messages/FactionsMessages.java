@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.messages;
 
+import dev.lockedthread.factionspro.messages.iface.IMessages;
 import org.bukkit.ChatColor;
 
 public enum FactionsMessages implements IMessages {

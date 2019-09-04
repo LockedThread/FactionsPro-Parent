@@ -3,7 +3,7 @@ package dev.lockedthread.factionspro.commands;
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
-import dev.lockedthread.factionspro.messages.IMessages;
+import dev.lockedthread.factionspro.messages.iface.IMessages;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package dev.lockedthread.factionspro.configs.types;
 
 import dev.lockedthread.factionspro.configs.Config;
-import dev.lockedthread.factionspro.messages.IMessages;
+import dev.lockedthread.factionspro.messages.iface.IMessages;
 import dev.lockedthread.factionspro.modules.Module;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
