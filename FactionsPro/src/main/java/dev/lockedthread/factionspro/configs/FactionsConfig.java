@@ -101,8 +101,6 @@ public class FactionsConfig extends YamlConfig {
         Field[] fields = FactionsConfig.this.getClass().getFields();
         boolean setupComments = false;
         for (Field field : fields) {
-            String key = field.getName().replace("_", ".");
-            //String key = field.getName().contains("_") ? Joiner.on(".").skipNulls().join(field.getName().split("_")) : field.getName();
             try {
                 field.setAccessible(true);
                 Serializer serializer = null;
@@ -111,22 +109,19 @@ public class FactionsConfig extends YamlConfig {
                     value = field.get(null);
                     serializer = SerializerRegistry.get().getSerializer(value.getClass());
                 }
+                String key = field.getName().replace("_", ".");
+                ConfigEntry configEntry = getConfigEntry(field);
+                if (configEntry != null && !configEntry.key().isEmpty()) {
+                    key = configEntry.key();
+                }
                 if (isSet(key)) {
                     if (serializer != null) {
-                        ConfigEntry configEntry = getConfigEntry(field);
-                        if (configEntry != null && !configEntry.key().isEmpty()) {
-                            key = configEntry.key();
-                        }
                         field.set(null, serializer.deserialize(getConfigurationSection(key)));
                     } else {
                         field.set(null, get(key));
                     }
                 } else {
-                    ConfigEntry configEntry = getConfigEntry(field);
                     if (configEntry != null) {
-                        if (!configEntry.key().isEmpty()) {
-                            key = configEntry.key();
-                        }
                         int lastIndexOfColon = key.lastIndexOf(".");
                         String sectionString = lastIndexOfColon == -1 ? COMMENT_SECRET + key : key.substring(0, lastIndexOfColon + 1) + COMMENT_SECRET + key.substring(lastIndexOfColon + 1);
 
@@ -140,29 +135,38 @@ public class FactionsConfig extends YamlConfig {
                     if (serializer != null) {
                         ConfigurationSection section = isSet(key) && isConfigurationSection(key) ? getConfigurationSection(key) : createSection(key);
                         serializer.serialize(section, value);
-                        continue;
-
+                    } else {
+                        if (value == null) {
+                            value = field.get(null);
+                        }
+                        set(key, value);
                     }
-                    set(key, value);
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("This shouldn't be thrown, report this to LockedThread immediately", e);
             }
         }
+        save();
 
         if (setupComments) {
             try {
                 String[] lines = getYamlConfiguration().saveToString().split("\n");
                 for (int i = 0; i < lines.length; i++) {
                     String line = lines[i];
+                    System.out.println("line = " + line);
                     String spaces = getSpaces(line);
+                    System.out.println("spaces = \"" + spaces + "\"");
                     boolean startsWith = line.startsWith(spaces + COMMENT_SECRET);
+                    System.out.println("startsWith = " + startsWith);
                     if (startsWith) {
-                        lines[i] = spaces + line.replaceFirst(line.substring(0, line.indexOf(":") + 1), "#");
+                        line = spaces + line.replaceFirst(line.substring(0, line.indexOf(":") + 1), "#");
+                        lines[i] = line;
+                        System.out.println("lines[i] = " + lines[i]);
                     }
                 }
                 try (FileWriter writer = new FileWriter(getFile())) {
                     for (String str : lines) {
+                        System.out.println("str = " + str);
                         writer.write(str + System.lineSeparator());
                     }
                 }
