@@ -1,6 +1,7 @@
 package dev.lockedthread.factionspro.commands.executor;
 
 import com.google.common.base.Joiner;
+import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.FCommand;
 import dev.lockedthread.factionspro.commands.context.types.ImmutableCommandContext;
@@ -9,6 +10,7 @@ import dev.lockedthread.factionspro.utils.CommandMapUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -32,7 +34,7 @@ public class FCommandExecutor implements CommandExecutor {
         String realLabel = colonIndex != -1 ? label.substring(colonIndex + 1) : label;
         FCommand fCommand = fCommandMap.get(realLabel);
         if (fCommand != null) {
-            return fCommand.perform(new ImmutableCommandContext(sender, "/" + realLabel + " " + Joiner.on(" ").skipNulls().join(args), args, realLabel));
+            return fCommand.perform(new ImmutableCommandContext(sender, "/" + realLabel + " " + Joiner.on(" ").skipNulls().join(args), args, realLabel, sender instanceof Player ? FactionsPro.get().getFactionPlayerMap().get(((Player) sender).getUniqueId()) : null));
         }
         throw new RuntimeException("Unable to find registered FCommand even though it's registered to this executor");
     }

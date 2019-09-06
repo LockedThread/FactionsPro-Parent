@@ -5,7 +5,15 @@ import org.bukkit.ChatColor;
 
 public enum FactionsMessages implements IMessages {
 
-    COMMAND_UNABLE_TO_PARSE_ARGUMENT("&cUnable to parse {argument} as {type}");
+    COMMAND_UNABLE_TO_PARSE_ARGUMENT("&cUnable to parse {argument} as {type}"),
+
+    COMMAND_USAGE_MESSAGE("&c&lERROR &8» &c{usage}"),
+    COMMAND_USAGE_UNABLE_TO_EXECUTE("&c&lERROR &8» &cUnable to execute command because {reason}"),
+
+    COMMAND_FACTIONS_CREATE_ERROR_TOO_MANY_ARGUMENTS("&c&lERROR &8» &cToo many arguments! Can't create create multi-word faction names."),
+    COMMAND_FACTIONS_CREATE_ERROR_FACTION_EXISTS("&c&lERROR &8» &cUnable to create faction because it already exists."),
+    COMMAND_FACTIONS_CREATE_SUCCESS("&a&lSUCCESS &8» &aYou have created your faction named {name}."),
+    COMMAND_FACTIONS_CREATE_BROADCAST("\n&e&lNOTICE &8» &e{player} &fhas created a faction named &e{name}.\n");
 
     private String unformattedMessage;
 

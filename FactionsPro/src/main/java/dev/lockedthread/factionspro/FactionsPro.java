@@ -7,20 +7,23 @@ import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.modules.annotations.ModuleInfo;
 import dev.lockedthread.factionspro.structure.Faction;
+import dev.lockedthread.factionspro.structure.FactionPlayer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @ModuleInfo(name = "FactionsPro")
+@Getter
+@Setter
 public class FactionsPro extends Module {
 
     private static FactionsPro instance;
-    @Getter
     private FactionsConfig mainConfig;
-    @Getter
-    @Setter
-    private Map<Integer, Faction> factionMap;
+    private Map<UUID, Faction> factionMap;
+    private Map<UUID, FactionPlayer> factionPlayerMap;
 
     @Override
     public void enable() {
@@ -28,6 +31,15 @@ public class FactionsPro extends Module {
         registerCommand(FCommandRoot.class);
         YamlConfig messagesConfig = new YamlConfig(this, "messages.yml", false);
         registerConfigs((this.mainConfig = new FactionsConfig(this, "config.yml", false)), messagesConfig.onLoad(() -> messagesConfig.loadMessageConfig(FactionsMessages.class)));
+    }
+
+    private void setupDatabase() {
+
+
+        // Temporary Memory Based Implementation
+
+        this.factionMap = new HashMap<>();
+        this.factionPlayerMap = new HashMap<>();
     }
 
     @Override

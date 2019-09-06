@@ -3,6 +3,7 @@ package dev.lockedthread.factionspro.commands;
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
+import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.messages.iface.IMessages;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -166,10 +167,22 @@ public abstract class FCommand {
 
     public void msg(Enum<? extends IMessages> iMessages, String... placeholders) {
         String message = ((IMessages) iMessages).getMessage();
-        for (int i = 0; i < placeholders.length; i += 2) {
-            message = message.replace(placeholders[i], placeholders[i + 1]);
+        if (placeholders.length == 2) {
+            message = message.replace(placeholders[0], placeholders[1]);
+        } else {
+            for (int i = 0; i < placeholders.length; i += 2) {
+                message = message.replace(placeholders[i], placeholders[i + 1]);
+            }
         }
         msg(message);
+    }
+
+    public void msgUsage() {
+        msg(FactionsMessages.COMMAND_USAGE_MESSAGE, "{usage}", getUsage());
+    }
+
+    public void msgUnableToExecute(String reason) {
+        msg(FactionsMessages.COMMAND_USAGE_UNABLE_TO_EXECUTE, "{reason}", reason);
     }
 
     @Retention(RetentionPolicy.RUNTIME)

@@ -47,6 +47,10 @@ public class FactionPlayer {
         }
     }
 
+    public void logout() {
+        this.player = null;
+    }
+
     @Nullable
     public Player getPlayer() {
         return player;

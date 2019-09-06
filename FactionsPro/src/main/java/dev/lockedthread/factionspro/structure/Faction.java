@@ -7,11 +7,12 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 public class Faction {
 
-    private final int id;
+    private final UUID uuid;
 
     private transient final Set<FactionPlayer> factionPlayerSet;
 
@@ -20,10 +21,11 @@ public class Faction {
 
     private String name;
 
-    private Map<Integer, Relation> relationMap;
+    private Map<UUID, Relation> relationMap;
 
-    public Faction(int id, String name, FactionPlayer leader) {
-        this.id = id;
+    public Faction(String name, FactionPlayer leader) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        this.uuid = new UUID(random.nextLong(), random.nextLong());
         this.name = name;
         this.leader = leader;
         (this.factionPlayerSet = new HashSet<>(1)).add(leader);
@@ -51,7 +53,7 @@ public class Faction {
         if (faction == null || relationMap == null) {
             return Relation.getDefaultRelation();
         }
-        return relationMap.getOrDefault(faction.getId(), Relation.getDefaultRelation());
+        return relationMap.getOrDefault(faction.getUuid(), Relation.getDefaultRelation());
     }
 
     @NotNull
@@ -60,7 +62,7 @@ public class Faction {
     }
 
     @NotNull
-    public Map<Integer, Relation> getRelationMap() {
+    public Map<UUID, Relation> getRelationMap() {
         return relationMap == null ? this.relationMap = new HashMap<>() : relationMap;
     }
 
