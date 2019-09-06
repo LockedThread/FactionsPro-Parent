@@ -16,11 +16,11 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class FactionsConfig extends YamlConfig {
 
     private static final String COMMENT_SECRET = "COMMENT_";
-
 
     @ConfigEntry(comments = {"The player's starting power"})
     public static double players_power_starting = 20.0;
@@ -57,6 +57,10 @@ public class FactionsConfig extends YamlConfig {
     public static Relation neutralRelation = Relation.NEUTRAL;
     @ConfigEntry(comments = {"Config section for the truce relation"}, key = "relations.truce")
     public static Relation trueRelation = Relation.TRUCE;
+
+    @ConfigEntry(comments = {"Whether or not faction creations broadcasts are enabled"})
+    public static boolean factions_create_broadcast_enabled = true;
+
 
     @Nullable
     private static FactionsConfig instance;
@@ -101,8 +105,10 @@ public class FactionsConfig extends YamlConfig {
         Field[] fields = FactionsConfig.this.getClass().getFields();
         boolean setupComments = false;
         for (Field field : fields) {
+            if (Modifier.isPrivate(field.getModifiers()) || Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
             try {
-                field.setAccessible(true);
                 Serializer serializer = null;
                 Object value = null;
                 if (!field.getType().isPrimitive()) {
