@@ -1,6 +1,9 @@
 package dev.lockedthread.factionspro.commands.arguments.registry;
 
+import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.commands.arguments.parser.ArgumentParser;
+import dev.lockedthread.factionspro.structure.Faction;
+import dev.lockedthread.factionspro.structure.FactionPlayer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,6 +79,15 @@ public class ArgumentRegistry {
             }
             return Optional.empty();
         });
+
+        register(Faction.class, () -> s -> Optional.ofNullable(FactionsPro.get().getFactionMap().get(s)));
+        register(FactionPlayer.class, () -> s -> {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(s);
+            if (!offlinePlayer.hasPlayedBefore()) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(FactionsPro.get().getFactionPlayerMap().get(offlinePlayer.getUniqueId()));
+        });
     }
 
     public static ArgumentRegistry get() {
@@ -92,7 +104,7 @@ public class ArgumentRegistry {
         return argumentParser.parse().apply(application);
     }
 
-    public void register(Class<?> aClass, ArgumentParser<?> argument) {
+    public <T> void register(Class<T> aClass, ArgumentParser<T> argument) {
         if (argumentParserRegistry.putIfAbsent(aClass, argument) != null) {
             throw new RuntimeException("Unable to put " + aClass.getSimpleName() + " argument parser in the map as it already exists.");
         }

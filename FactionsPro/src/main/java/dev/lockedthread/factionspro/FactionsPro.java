@@ -1,13 +1,14 @@
 package dev.lockedthread.factionspro;
 
+import dev.lockedthread.factionspro.collections.maps.FactionMap;
 import dev.lockedthread.factionspro.commands.FCommandRoot;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.configs.types.YamlConfig;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.modules.annotations.ModuleInfo;
-import dev.lockedthread.factionspro.structure.Faction;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
+import dev.lockedthread.factionspro.units.FactionPlayerUnit;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class FactionsPro extends Module {
 
     private static FactionsPro instance;
     private FactionsConfig mainConfig;
-    private Map<UUID, Faction> factionMap;
+    private FactionMap factionMap;
     private Map<UUID, FactionPlayer> factionPlayerMap;
 
     @Override
@@ -31,6 +32,8 @@ public class FactionsPro extends Module {
         registerCommand(FCommandRoot.class);
         YamlConfig messagesConfig = new YamlConfig(this, "messages.yml", false);
         registerConfigs((this.mainConfig = new FactionsConfig(this, "config.yml", false)), messagesConfig.onLoad(() -> messagesConfig.loadMessageConfig(FactionsMessages.class)));
+        setupDatabase();
+        registerUnits(new FactionPlayerUnit());
     }
 
     private void setupDatabase() {
@@ -38,7 +41,7 @@ public class FactionsPro extends Module {
 
         // Temporary Memory Based Implementation
 
-        this.factionMap = new HashMap<>();
+        this.factionMap = new FactionMap();
         this.factionPlayerMap = new HashMap<>();
     }
 
