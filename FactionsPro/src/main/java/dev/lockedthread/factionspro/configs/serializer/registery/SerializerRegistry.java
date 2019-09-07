@@ -33,7 +33,7 @@ public class SerializerRegistry {
 
             @Override
             public Role deserialize(ConfigurationSection section) {
-                Role role = Role.valueOf(section.getName().toUpperCase());
+                Role role = Role.valueOf(section.getName().toUpperCase().replace('-', '_'));
                 role.setIcon(section.getString("icon"));
                 role.setName(section.getString("name"));
                 return role;
