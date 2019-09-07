@@ -1,6 +1,5 @@
 package dev.lockedthread.factionspro.commands;
 
-import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
 import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
@@ -22,7 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @ToString(doNotUseGetters = true)
 @lombok.Data
@@ -42,17 +43,17 @@ public abstract class FCommand {
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     public CommandContext commandContext;
-    @Nullable
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Map<String, FCommand> subCommands;
+
+    @NotNull
+    @Getter(lazy = true)
+    private final Map<String, FCommand> subCommands = new HashMap<>();
 
     public FCommand() {
         Data data = getClass().getAnnotation(Data.class);
         if (data != null) {
             this.name = data.name();
             this.permission = data.permission().isEmpty() ? null : data.permission();
-            this.aliases = data.aliases().length == 0 ? null : data.aliases();
+            this.aliases = data.aliases();
             this.requirePlayer = data.requirePlayer();
             this.requireConsole = data.requireConsole();
             this.usage = data.usage().isEmpty() ? null : data.usage();
@@ -65,11 +66,11 @@ public abstract class FCommand {
     public FCommand(Data data) {
         this.name = data.name();
         this.permission = data.permission().isEmpty() ? null : data.permission();
-        this.aliases = data.aliases().length == 0 ? null : data.aliases();
+        this.aliases = data.aliases();
         this.requirePlayer = data.requirePlayer();
         this.requireConsole = data.requireConsole();
-        this.usage = data.usage();
-        this.description = data.description();
+        this.usage = data.usage().isEmpty() ? null : data.usage();
+        this.description = data.description().isEmpty() ? null : data.description();
     }
 
     private static boolean fCommandCheck(CommandSender sender, FCommand fCommand, boolean sendMessage) {
@@ -108,15 +109,17 @@ public abstract class FCommand {
 
     public boolean perform(CommandContext commandContext) {
         if (commandContext.getArguments().length > 0) {
-            if (subCommands != null) {
-                FCommand subCommand = subCommands.get(commandContext.getArguments()[0]);
-                if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
-                    commandContext.setLabel(commandContext.getArguments()[0]);
-                    commandContext.setArguments(Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1));
-                    subCommand.perform(commandContext);
-                    return true;
+            if (hasSubCommands()) {
+                FCommand subCommand = getSubCommands().get(commandContext.getArguments()[0]);
+                if (subCommand != null) {
+                    if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
+                        commandContext.setLabel(commandContext.getArguments()[0]);
+                        commandContext.setArguments(Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1));
+                        subCommand.perform(commandContext);
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             }
         }
         if (fCommandCheck(commandContext.getSender(), this, true)) {
@@ -132,17 +135,13 @@ public abstract class FCommand {
         return false;
     }
 
-    public Map<String, FCommand> getSubCommands() {
-        return subCommands == null ? subCommands = new CaseInsensitiveHashMap<>() : subCommands;
-    }
-
     public void registerSubCommand(FCommand fCommand) {
         if (fCommand.getAliases() != null) {
             for (String alias : fCommand.getAliases()) {
-                fCommand.getSubCommands().put(alias, fCommand);
+                getSubCommands().put(alias, fCommand);
             }
         }
-        fCommand.getSubCommands().put(fCommand.getName(), this);
+        getSubCommands().put(fCommand.getName(), fCommand);
     }
 
     public final void registerSubCommands(Class... clazzes) {
@@ -153,6 +152,10 @@ public abstract class FCommand {
 
     public <T extends FCommand> void registerSubCommand(Class<T> tClass) {
         registerSubCommand(of(tClass));
+    }
+
+    public boolean hasSubCommands() {
+        return ((AtomicReference) subCommands).get() != null;
     }
 
     public void msg(String... messages) {
