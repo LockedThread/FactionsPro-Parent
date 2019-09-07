@@ -9,6 +9,7 @@ allprojects {
         // Java data
         apply plugin: 'java'
         sourceCompatibility = 1.8
+        compileJava.options.encoding = 'UTF-8'
         repositories {
             mavenCentral()
             mavenLocal()
