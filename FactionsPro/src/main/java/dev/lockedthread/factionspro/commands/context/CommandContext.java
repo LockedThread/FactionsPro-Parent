@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CommandContext {
 
-    @Nullable
+    @NotNull
     FactionPlayer getFactionPlayer();
 
     @NotNull

@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @EqualsAndHashCode
 @ToString(doNotUseGetters = true)
@@ -23,10 +22,10 @@ public class ImmutableCommandContext implements CommandContext {
     private String[] arguments;
     @NonNull
     private String label;
-    @Nullable
+    @NotNull
     private final FactionPlayer factionPlayer;
 
-    @Nullable
+    @NotNull
     @Override
     public FactionPlayer getFactionPlayer() {
         return factionPlayer;
