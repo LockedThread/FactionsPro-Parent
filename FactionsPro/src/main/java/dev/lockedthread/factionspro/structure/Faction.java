@@ -3,13 +3,19 @@ package dev.lockedthread.factionspro.structure;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
 import dev.lockedthread.factionspro.structure.position.ChunkPosition;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Data
+@ToString(doNotUseGetters = true)
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Faction {
 
     private final UUID uuid;
@@ -29,6 +35,7 @@ public class Faction {
         this.name = name;
         this.leader = leader;
         (this.factionPlayerSet = new HashSet<>(1)).add(leader);
+        leader.setRole(Role.LEADER);
     }
 
     @NotNull
