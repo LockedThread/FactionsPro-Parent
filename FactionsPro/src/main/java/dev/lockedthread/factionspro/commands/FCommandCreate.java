@@ -4,7 +4,7 @@ import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.commands.arguments.exception.ArgumentParseException;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
-import dev.lockedthread.factionspro.structure.Faction;
+import dev.lockedthread.factionspro.structure.factions.Faction;
 import org.bukkit.Bukkit;
 
 import java.util.Optional;
@@ -25,7 +25,16 @@ public class FCommandCreate extends FCommand {
             if (factionOptional.isPresent()) {
                 msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_FACTION_EXISTS);
             } else {
-                Faction faction = new Faction(commandContext.getRawArgument(0), commandContext.getFactionPlayer());
+                String rawArgument = commandContext.getRawArgument(0);
+
+                for (char blockedChar : FactionsConfig.factions_create_blocked_chars) {
+                    if (rawArgument.indexOf(blockedChar) != -1) {
+                        msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_UNABLE_TO_CREATE_FACTION_WITH_CHAR, "{char}", Character.toString(blockedChar));
+                        return;
+                    }
+                }
+
+                Faction faction = new Faction(rawArgument, commandContext.getFactionPlayer());
                 FactionsPro.get().getFactionMap().put(faction.getUuid(), faction);
                 commandContext.getFactionPlayer().setFaction(faction);
                 msg(FactionsMessages.COMMAND_FACTIONS_CREATE_SUCCESS, "{name}", faction.getName());

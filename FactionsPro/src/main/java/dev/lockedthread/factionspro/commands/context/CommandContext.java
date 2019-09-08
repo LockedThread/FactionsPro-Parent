@@ -4,7 +4,6 @@ import dev.lockedthread.factionspro.commands.arguments.Argument;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface CommandContext {
 
@@ -19,7 +18,6 @@ public interface CommandContext {
 
     void setArguments(@NotNull String[] arguments);
 
-    @Nullable
     String getRawArgument(int index);
 
     @NotNull <T> Argument<T> getArgument(Class<T> tClass, int index);

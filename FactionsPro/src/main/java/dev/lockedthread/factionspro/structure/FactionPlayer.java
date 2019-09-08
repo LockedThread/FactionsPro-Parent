@@ -3,6 +3,7 @@ package dev.lockedthread.factionspro.structure;
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.structure.enums.Role;
+import dev.lockedthread.factionspro.structure.factions.Faction;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +40,8 @@ public class FactionPlayer {
         } else {
             this.power = FactionsConfig.players_power_starting;
         }
+
+        setFaction(FactionsConfig.systemFactionWilderness);
     }
 
     public void die() {
@@ -68,6 +71,7 @@ public class FactionPlayer {
     public void setFaction(Faction faction) {
         this.faction = faction;
         this.factionUUID = faction.getUuid();
+        this.faction.getFactionPlayerSet().add(this);
     }
 
     public void logout() {

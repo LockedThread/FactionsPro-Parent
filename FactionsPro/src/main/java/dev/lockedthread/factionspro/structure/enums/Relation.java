@@ -15,7 +15,11 @@ public enum Relation {
     ENEMY(ChatColor.RED, true, false),
     MEMBER(ChatColor.GREEN, true, false),
     NEUTRAL(ChatColor.WHITE, true, true),
-    TRUCE(ChatColor.AQUA, true, false);
+    TRUCE(ChatColor.AQUA, true, false),
+
+    WILDERNESS(ChatColor.DARK_GREEN, true, false),
+    SAFE_ZONE(ChatColor.GOLD, true, false),
+    WAR_ZONE(ChatColor.DARK_RED, true, false);
 
     @Getter(lazy = true)
     private static final Relation defaultRelation = Arrays.stream(values()).filter(Relation::is_default).findFirst().orElse(MEMBER);
@@ -31,5 +35,9 @@ public enum Relation {
         this.chatColor = chatColor;
         this.enabled = enabled;
         this._default = _default;
+    }
+
+    public boolean isSystemRelation() {
+        return this == WILDERNESS || this == SAFE_ZONE || this == WAR_ZONE;
     }
 }

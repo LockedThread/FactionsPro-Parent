@@ -2,8 +2,8 @@ package dev.lockedthread.factionspro.commands.arguments.registry;
 
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.commands.arguments.parser.ArgumentParser;
-import dev.lockedthread.factionspro.structure.Faction;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
+import dev.lockedthread.factionspro.structure.factions.Faction;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

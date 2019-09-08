@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ConfigEntry {
 
-    String[] comments();
+    String[] comments() default {};
 
     String key() default "";
 }

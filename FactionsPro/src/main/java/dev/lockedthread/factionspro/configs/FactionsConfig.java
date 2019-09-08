@@ -8,6 +8,7 @@ import dev.lockedthread.factionspro.configs.types.YamlConfig;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
+import dev.lockedthread.factionspro.structure.factions.types.SystemFaction;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class FactionsConfig extends YamlConfig {
 
@@ -58,8 +61,17 @@ public class FactionsConfig extends YamlConfig {
     @ConfigEntry(comments = {"Config section for the truce relation"}, key = "relations.truce")
     public static Relation trueRelation = Relation.TRUCE;
 
+    @ConfigEntry(key = "factions.system-factions.wilderness")
+    public static SystemFaction systemFactionWilderness = new SystemFaction("Wilderness", Relation.WILDERNESS);
+    @ConfigEntry(key = "factions.system-factions.war-zone")
+    public static SystemFaction systemFactionWarZone = new SystemFaction("Warzone", Relation.WAR_ZONE);
+    @ConfigEntry(key = "factions.system-factions.safe-zone")
+    public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE);
+
     @ConfigEntry(comments = {"Whether or not faction creations broadcasts are enabled"})
     public static boolean factions_create_broadcast_enabled = true;
+
+    public static char[] factions_create_blocked_chars = new char[]{'-', '=', '+', '_', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '`', '~', '[', '{', ']', '}', '|', '\\', '\'', '"', ';', ':', ',', '<', '>', '.', '/'};
 
 
     @Nullable
@@ -124,18 +136,23 @@ public class FactionsConfig extends YamlConfig {
                     if (serializer != null) {
                         field.set(null, serializer.deserialize(getConfigurationSection(key)));
                     } else {
+                        if (field.getType().isArray()) {
+                            field.set(null, getList(key).toArray());
+                        }
                         field.set(null, get(key));
                     }
                 } else {
                     if (configEntry != null) {
-                        int lastIndexOfColon = key.lastIndexOf(".");
-                        String sectionString = lastIndexOfColon == -1 ? COMMENT_SECRET + key : key.substring(0, lastIndexOfColon + 1) + COMMENT_SECRET + key.substring(lastIndexOfColon + 1);
-
                         String[] comments = configEntry.comments();
-                        for (int i = 0; i < comments.length; i++) {
-                            set(sectionString + i, comments[i]);
+                        if (comments.length > 0) {
+                            int lastIndexOfColon = key.lastIndexOf(".");
+                            String sectionString = lastIndexOfColon == -1 ? COMMENT_SECRET + key : key.substring(0, lastIndexOfColon + 1) + COMMENT_SECRET + key.substring(lastIndexOfColon + 1);
+
+                            for (int i = 0; i < comments.length; i++) {
+                                set(sectionString + i, comments[i]);
+                            }
+                            setupComments = true;
                         }
-                        setupComments = true;
                     }
 
                     if (serializer != null) {
@@ -144,6 +161,9 @@ public class FactionsConfig extends YamlConfig {
                     } else {
                         if (value == null) {
                             value = field.get(null);
+                        }
+                        if (value.getClass().isArray()) {
+                            set(key, new ArrayList<>(Collections.singleton(value)));
                         }
                         set(key, value);
                     }

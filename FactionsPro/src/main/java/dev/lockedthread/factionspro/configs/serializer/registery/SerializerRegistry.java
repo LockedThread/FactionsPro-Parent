@@ -1,14 +1,17 @@
 package dev.lockedthread.factionspro.configs.serializer.registery;
 
+import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.serializer.Serializer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
+import dev.lockedthread.factionspro.structure.factions.types.SystemFaction;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class SerializerRegistry {
 
@@ -50,7 +53,9 @@ public class SerializerRegistry {
             public void serialize(ConfigurationSection section, Relation relation) {
                 section.set("color", relation.getChatColor().name());
                 section.set("enabled", relation.isEnabled());
-                section.set("default", relation.is_default());
+                if (!relation.isSystemRelation()) {
+                    section.set("default", relation.is_default());
+                }
             }
 
             @Override
@@ -58,8 +63,58 @@ public class SerializerRegistry {
                 Relation relation = Relation.valueOf(section.getName().toUpperCase());
                 relation.setChatColor(ChatColor.valueOf(Objects.requireNonNull(section.getString("color")).toUpperCase()));
                 relation.setEnabled(section.getBoolean("enabled"));
-                relation.set_default(section.getBoolean("default"));
+                if (!relation.isSystemRelation()) {
+                    relation.set_default(section.getBoolean("default"));
+                }
                 return relation;
+            }
+        });
+
+        register(SystemFaction.class, new Serializer<SystemFaction>() {
+            @Override
+            public Class<SystemFaction> getValueClass() {
+                return SystemFaction.class;
+            }
+
+            @Override
+            public void serialize(ConfigurationSection section, SystemFaction systemFaction) {
+                section.set("name", systemFaction.getName().toLowerCase().replace('_', '-'));
+                section.set("uuid", systemFaction.getUuid().toString());
+            }
+
+            @Override
+            public SystemFaction deserialize(ConfigurationSection section) {
+                Relation relation = null;
+                String name = section.getString("name").toUpperCase().replace('-', '_');
+                switch (name.toUpperCase()) {
+                    case "WILDERNESS":
+                        relation = Relation.WILDERNESS;
+                        break;
+                    case "WAR_ZONE":
+                        relation = Relation.WAR_ZONE;
+                        break;
+                    case "SAFE_ZONE":
+                        relation = Relation.SAFE_ZONE;
+                        break;
+                }
+                UUID uuid;
+                String uuidString = section.getString("uuid");
+                if (uuidString == null) {
+                    throw new RuntimeException("THIS IS VERY BAD! You have changed the uuid of factions. Your FactionMap instance will now be destroyed.");
+                } else {
+                    try {
+                        uuid = UUID.fromString(uuidString);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (relation == null) {
+                    throw new RuntimeException("Unable to find relation with name " + name);
+                }
+                SystemFaction systemFaction = new SystemFaction(name, relation, uuid);
+
+                FactionsPro.get().getFactionMap().put(uuid, systemFaction);
+                return systemFaction;
             }
         });
     }

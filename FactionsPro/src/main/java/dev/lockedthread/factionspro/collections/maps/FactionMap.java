@@ -1,7 +1,7 @@
 package dev.lockedthread.factionspro.collections.maps;
 
 import dev.lockedthread.factionspro.collections.CaseInsensitiveHashMap;
-import dev.lockedthread.factionspro.structure.Faction;
+import dev.lockedthread.factionspro.structure.factions.Faction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

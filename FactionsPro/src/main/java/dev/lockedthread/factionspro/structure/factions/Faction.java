@@ -1,7 +1,9 @@
-package dev.lockedthread.factionspro.structure;
+package dev.lockedthread.factionspro.structure.factions;
 
+import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
+import dev.lockedthread.factionspro.structure.factions.types.SystemFaction;
 import dev.lockedthread.factionspro.structure.position.ChunkPosition;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,13 +31,20 @@ public class Faction {
 
     private Map<UUID, Relation> relationMap;
 
-    public Faction(String name, FactionPlayer leader) {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        this.uuid = new UUID(random.nextLong(), random.nextLong());
+    public Faction(String name, FactionPlayer leader, UUID uuid) {
+        this.uuid = uuid;
         this.name = name;
         this.leader = leader;
-        (this.factionPlayerSet = new HashSet<>(1)).add(leader);
-        leader.setRole(Role.LEADER);
+        if (leader != null) {
+            (this.factionPlayerSet = new HashSet<>(1)).add(leader);
+            leader.setRole(Role.LEADER);
+        } else {
+            this.factionPlayerSet = new HashSet<>(0);
+        }
+    }
+
+    public Faction(String name, FactionPlayer leader) {
+        this(name, leader, new UUID(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong()));
     }
 
     @NotNull
@@ -57,7 +66,11 @@ public class Faction {
 
     @NotNull
     public Relation getRelation(Faction faction) {
-        if (faction == null || relationMap == null) {
+        if (faction instanceof SystemFaction) {
+            return ((SystemFaction) faction).getGlobalRelation();
+        } else if (faction == null) {
+            return Relation.getDefaultRelation();
+        } else if (relationMap == null) {
             return Relation.getDefaultRelation();
         }
         return relationMap.getOrDefault(faction.getUuid(), Relation.getDefaultRelation());

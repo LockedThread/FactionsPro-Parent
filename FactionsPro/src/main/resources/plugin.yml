@@ -8,3 +8,9 @@ permissions:
   factionspro.*:
     description: 'Gives access to all FactionsPro related permissions.'
     default: op
+  factionspro.commands.create:
+    description: 'Gives permission to create a faction'
+  factionspro.commands.help:
+    description: 'Gives permission to do the help command'
+  factionspro.commands.root:
+    description: 'Gives permission to do the root factions command'

@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.structure;
 
+import dev.lockedthread.factionspro.structure.factions.Faction;
 import dev.lockedthread.factionspro.structure.position.ChunkPosition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
