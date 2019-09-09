@@ -18,8 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class FactionsConfig extends YamlConfig {
 
@@ -62,17 +61,23 @@ public class FactionsConfig extends YamlConfig {
     public static Relation trueRelation = Relation.TRUCE;
 
     @ConfigEntry(key = "factions.system-factions.wilderness")
-    public static SystemFaction systemFactionWilderness = new SystemFaction("Wilderness", Relation.WILDERNESS);
+    public static SystemFaction systemFactionWilderness = new SystemFaction("Wilderness", Relation.WILDERNESS, UUID.randomUUID());
     @ConfigEntry(key = "factions.system-factions.war-zone")
-    public static SystemFaction systemFactionWarZone = new SystemFaction("Warzone", Relation.WAR_ZONE);
+    public static SystemFaction systemFactionWarZone = new SystemFaction("Warzone", Relation.WAR_ZONE, UUID.randomUUID());
     @ConfigEntry(key = "factions.system-factions.safe-zone")
-    public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE);
+    public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE, UUID.randomUUID());
 
     @ConfigEntry(comments = {"Whether or not faction creations broadcasts are enabled"})
     public static boolean factions_create_broadcast_enabled = true;
 
-    public static char[] factions_create_blocked_chars = new char[]{'-', '=', '+', '_', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '`', '~', '[', '{', ']', '}', '|', '\\', '\'', '"', ';', ':', ',', '<', '>', '.', '/'};
+    @ConfigEntry(key = "factions.create.blocked-chars")
+    public static List<Character> factions_create_blocked_chars = new ArrayList<>(Arrays.asList('-', '=', '+', '_', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '`', '~', '[', '{', ']', '}', '|', '\\', '\'', '"', ';', ':', ',', '<', '>', '.', '/'));
 
+    @ConfigEntry(comments = {"The default faction description"}, key = "factions.default.description")
+    public static String factions_default_description = "Wow you fr using the default description?";
+
+    @ConfigEntry(comments = {"The default faction max power"}, key = "factions.default.power.max-power")
+    public static double factions_power_default_max_power = 100.0;
 
     @Nullable
     private static FactionsConfig instance;
@@ -123,7 +128,8 @@ public class FactionsConfig extends YamlConfig {
             try {
                 Serializer serializer = null;
                 Object value = null;
-                if (!field.getType().isPrimitive()) {
+                Class<?> type = field.getType();
+                if (!type.isPrimitive()) {
                     value = field.get(null);
                     serializer = SerializerRegistry.get().getSerializer(value.getClass());
                 }
@@ -136,10 +142,13 @@ public class FactionsConfig extends YamlConfig {
                     if (serializer != null) {
                         field.set(null, serializer.deserialize(getConfigurationSection(key)));
                     } else {
-                        if (field.getType().isArray()) {
-                            field.set(null, getList(key).toArray());
+                        if (type.isArray()) {
+                            field.set(null, getList(key).toArray(new Object[0]));
+                        } else if (type.isInstance(List.class)) {
+                            field.set(null, getList(key));
+                        } else {
+                            field.set(null, get(key));
                         }
-                        field.set(null, get(key));
                     }
                 } else {
                     if (configEntry != null) {

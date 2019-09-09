@@ -29,9 +29,11 @@ public class FactionPlayer {
     private double power;
     private double maxPower;
     private Role role;
+    private String lastKnownName;
 
-    public FactionPlayer(UUID uuid) {
-        this.uuid = uuid;
+    public FactionPlayer(OfflinePlayer offlinePlayer) {
+        this.uuid = offlinePlayer.getUniqueId();
+        this.lastKnownName = offlinePlayer.getName();
 
         /* Power */
         this.maxPower = FactionsConfig.players_power_maximum;
@@ -72,6 +74,7 @@ public class FactionPlayer {
         this.faction = faction;
         this.factionUUID = faction.getUuid();
         this.faction.getFactionPlayerSet().add(this);
+        this.faction.recalculatePower();
     }
 
     public void logout() {

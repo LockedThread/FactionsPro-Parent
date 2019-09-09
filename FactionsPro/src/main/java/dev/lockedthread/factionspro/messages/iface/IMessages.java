@@ -6,7 +6,13 @@ public interface IMessages {
 
     String getMessage();
 
+    String[] getArrayMessage();
+
     String getUnformattedMessage();
 
     void setMessage(String message);
+
+    boolean isArrayMessage();
+
+    void setArrayMessage(String[] arrayMessage);
 }

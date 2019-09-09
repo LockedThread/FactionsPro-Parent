@@ -1,5 +1,7 @@
 package dev.lockedthread.factionspro.structure.factions;
 
+import dev.lockedthread.factionspro.FactionsPro;
+import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @ToString(doNotUseGetters = true)
 @Getter
@@ -27,24 +30,39 @@ public class Faction {
     private transient FactionPlayer leader;
     private transient Set<ChunkPosition> chunkPositionSet;
 
+    private String description;
     private String name;
+    private double power;
+    private double maxPower;
 
     private Map<UUID, Relation> relationMap;
 
     public Faction(String name, FactionPlayer leader, UUID uuid) {
         this.uuid = uuid;
         this.name = name;
+        this.description = FactionsConfig.factions_default_description;
         this.leader = leader;
         if (leader != null) {
             (this.factionPlayerSet = new HashSet<>(1)).add(leader);
             leader.setRole(Role.LEADER);
+            this.power = leader.getPower();
         } else {
             this.factionPlayerSet = new HashSet<>(0);
+            this.power = 0.0;
         }
+        this.chunkPositionSet = new HashSet<>();
+        this.maxPower = FactionsConfig.factions_power_default_max_power;
     }
 
     public Faction(String name, FactionPlayer leader) {
         this(name, leader, new UUID(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong()));
+    }
+
+    public void recalculatePower() {
+        this.power = 0;
+        for (FactionPlayer factionPlayer : factionPlayerSet) {
+            this.power += factionPlayer.getPower();
+        }
     }
 
     @NotNull
@@ -84,6 +102,28 @@ public class Faction {
     @NotNull
     public Map<UUID, Relation> getRelationMap() {
         return relationMap == null ? this.relationMap = new HashMap<>() : relationMap;
+    }
+
+    public Set<Faction> getFactionsWithRelation(Relation relation) {
+        return relationMap.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() == relation)
+                .map(entry -> FactionsPro.get().getFactionMap().get(entry.getKey()))
+                .collect(Collectors.toSet());
+    }
+
+    public Map.Entry<Set<FactionPlayer>, Set<FactionPlayer>> getOnlineAndOfflinePlayers() {
+        Set<FactionPlayer> online = new HashSet<>();
+        Set<FactionPlayer> offline = new HashSet<>();
+
+        for (FactionPlayer factionPlayer : getFactionPlayerSet()) {
+            if (factionPlayer.isOnline()) {
+                online.add(factionPlayer);
+            } else {
+                offline.add(factionPlayer);
+            }
+        }
+        return new AbstractMap.SimpleImmutableEntry<>(offline, online);
     }
 
 

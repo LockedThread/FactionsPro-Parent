@@ -85,15 +85,15 @@ public class SerializerRegistry {
             @Override
             public SystemFaction deserialize(ConfigurationSection section) {
                 Relation relation = null;
-                String name = section.getString("name").toUpperCase().replace('-', '_');
+                String name = section.getString("name");
                 switch (name.toUpperCase()) {
                     case "WILDERNESS":
                         relation = Relation.WILDERNESS;
                         break;
-                    case "WAR_ZONE":
+                    case "WARZONE":
                         relation = Relation.WAR_ZONE;
                         break;
-                    case "SAFE_ZONE":
+                    case "SAFEZONE":
                         relation = Relation.SAFE_ZONE;
                         break;
                 }

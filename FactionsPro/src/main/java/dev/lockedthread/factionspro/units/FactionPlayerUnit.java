@@ -21,7 +21,7 @@ public class FactionPlayerUnit extends Unit {
                     if (factionPlayer != null) {
                         System.out.println("found factionPlayer = " + factionPlayer.toString());
                     } else {
-                        map.put(event.getPlayer().getUniqueId(), factionPlayer = new FactionPlayer(event.getPlayer().getUniqueId()));
+                        map.put(event.getPlayer().getUniqueId(), factionPlayer = new FactionPlayer(event.getPlayer()));
                         System.out.println("created factionPlayer = " + factionPlayer.toString());
                     }
                 }).post(FactionsPro.get());

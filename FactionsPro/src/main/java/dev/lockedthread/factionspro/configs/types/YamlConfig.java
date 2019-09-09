@@ -51,7 +51,11 @@ public class YamlConfig extends Config {
     public void loadMessageConfig(Class<? extends IMessages> iMessagesClass) {
         for (IMessages messageEnum : iMessagesClass.getEnumConstants()) {
             if (isSet("messages." + messageEnum.getConfigKey())) {
-                messageEnum.setMessage(getString("messages." + messageEnum.getConfigKey()));
+                if (messageEnum.isArrayMessage()) {
+                    messageEnum.setArrayMessage(getStringList("messages." + messageEnum.getConfigKey()).toArray(new String[0]));
+                } else {
+                    messageEnum.setMessage(getString("messages." + messageEnum.getConfigKey()));
+                }
             } else {
                 set("messages." + messageEnum.getConfigKey(), messageEnum.getUnformattedMessage());
             }

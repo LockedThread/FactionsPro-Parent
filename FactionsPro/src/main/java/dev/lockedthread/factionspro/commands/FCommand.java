@@ -107,32 +107,11 @@ public abstract class FCommand {
 
     public abstract void execute() throws ArgumentParseException;
 
-    public boolean perform(CommandContext commandContext) {
-        if (commandContext.getArguments().length > 0) {
-            if (hasSubCommands()) {
-                FCommand subCommand = getSubCommands().get(commandContext.getArguments()[0]);
-                if (subCommand != null) {
-                    if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
-                        commandContext.setLabel(commandContext.getArguments()[0]);
-                        commandContext.setArguments(Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1));
-                        subCommand.perform(commandContext);
-                        return true;
-                    }
-                    return false;
-                }
-            }
+    private static String replacePlaceholders(String message, String[] placeholders) {
+        for (int i = 0; i < placeholders.length; i += 2) {
+            message = message.replace(placeholders[i], placeholders[i + 1]);
         }
-        if (fCommandCheck(commandContext.getSender(), this, true)) {
-            this.commandContext = commandContext;
-            try {
-                execute();
-            } catch (ArgumentParseException e) {
-                e.getSenderConsumer().accept(commandContext.getSender());
-            }
-            this.commandContext = null;
-            return true;
-        }
-        return false;
+        return message;
     }
 
     public void registerSubCommand(FCommand fCommand) {
@@ -168,16 +147,46 @@ public abstract class FCommand {
         msg(((IMessages) iMessages).getMessage());
     }
 
-    public void msg(Enum<? extends IMessages> iMessages, String... placeholders) {
-        String message = ((IMessages) iMessages).getMessage();
-        if (placeholders.length == 2) {
-            message = message.replace(placeholders[0], placeholders[1]);
-        } else {
-            for (int i = 0; i < placeholders.length; i += 2) {
-                message = message.replace(placeholders[i], placeholders[i + 1]);
+    public boolean perform(CommandContext commandContext) {
+        System.out.println("getClass().getName() = " + getClass().getName());
+        System.out.println("toString() = " + toString() + "\n");
+        if (commandContext.getArguments().length > 0) {
+            if (hasSubCommands()) {
+                FCommand subCommand = getSubCommands().get(commandContext.getArguments()[0]);
+                if (subCommand != null) {
+                    if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
+                        @NotNull String[] args = Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1);
+                        commandContext.setLabel(commandContext.getArguments()[0]);
+                        commandContext.setArguments(args);
+                        subCommand.perform(commandContext);
+                        return true;
+                    }
+                    return false;
+                }
             }
         }
-        msg(message);
+        if (fCommandCheck(commandContext.getSender(), this, true)) {
+            this.commandContext = commandContext;
+            try {
+                execute();
+            } catch (ArgumentParseException e) {
+                e.getSenderConsumer().accept(commandContext.getSender());
+            }
+            this.commandContext = null;
+            return true;
+        }
+        return false;
+    }
+
+    public void msg(Enum<? extends IMessages> iMessages, String... placeholders) {
+        if (((IMessages) iMessages).isArrayMessage()) {
+            String[] arrayMessage = ((IMessages) iMessages).getArrayMessage();
+            for (String message : arrayMessage) {
+                msg(replacePlaceholders(message, placeholders));
+            }
+        } else {
+            msg(replacePlaceholders(((IMessages) iMessages).getMessage(), placeholders));
+        }
     }
 
     public void msgUsage() {
