@@ -71,7 +71,7 @@ public class FactionsConfig extends YamlConfig {
     public static boolean factions_create_broadcast_enabled = true;
 
     @ConfigEntry(key = "factions.create.blocked-chars")
-    public static List<Character> factions_create_blocked_chars = new ArrayList<>(Arrays.asList('-', '=', '+', '_', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '`', '~', '[', '{', ']', '}', '|', '\\', '\'', '"', ';', ':', ',', '<', '>', '.', '/'));
+    public static List<String> factions_create_blocked_chars = new ArrayList<>(Arrays.asList("-", "=", "+", "_", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "`", "~", "[", "{", "]", "}", "|", "\\", "\"", "\"", ";", ":", ",", "<", ">", ".", "/"));
 
     @ConfigEntry(comments = {"The default faction description"}, key = "factions.default.description")
     public static String factions_default_description = "Wow you fr using the default description?";

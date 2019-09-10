@@ -6,6 +6,8 @@ import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.factions.Faction;
+import dev.lockedthread.factionspro.utils.CenteredLine;
+import org.bukkit.ChatColor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -42,23 +44,32 @@ public class FCommandShow extends FCommand {
             return;
         }
         if (faction != null) {
+            ChatColor relationColor = commandContext.getArguments().length == 0 ? Relation.MEMBER.getChatColor() : commandContext.getFactionPlayer().getRelation(faction).getChatColor();
+            msg(new CenteredLine(FactionsMessages.COMMAND_FACTIONS_SHOW_RESPONSE_HEADER.getUnformattedMessage().replace("{relation-color}", relationColor.toString()).replace("{faction}", faction.getName())).getFormattedCenteredLine());
             Map.Entry<Set<FactionPlayer>, Set<FactionPlayer>> onlineAndOfflinePlayers = faction.getOnlineAndOfflinePlayers();
+            Set<Faction> allyFactions = faction.getFactionsWithRelation(Relation.ALLY);
+            Set<Faction> enemyFactions = faction.getFactionsWithRelation(Relation.ENEMY);
+            Set<Faction> truceFactions = faction.getFactionsWithRelation(Relation.TRUCE);
+
+            System.out.println(faction.toString());
+
             msg(FactionsMessages.COMMAND_FACTIONS_SHOW_RESPONSE,
+                    "{relation-color}", relationColor.toString(),
                     "{description}", faction.getDescription(),
-                    "{claims-amount}", String.valueOf(faction.getChunkPositionSet().size()),
+                    "{land-amount}", String.valueOf(faction.getChunkPositionSet().size()),
                     "{power}", String.valueOf(faction.getPower()),
                     "{max-power}", String.valueOf(faction.getMaxPower()),
                     "{ally-color}", Relation.ALLY.getChatColor().toString(),
                     "{enemy-color}", Relation.ENEMY.getChatColor().toString(),
                     "{truce-color}", Relation.TRUCE.getChatColor().toString(),
-                    "{allies}", Joiner.on(", ").skipNulls().join(faction.getFactionsWithRelation(Relation.ALLY).stream().map(Faction::getName).collect(Collectors.toSet())),
-                    "{enemies}", Joiner.on(", ").skipNulls().join(faction.getFactionsWithRelation(Relation.ENEMY).stream().map(Faction::getName).collect(Collectors.toSet())),
-                    "{truces}", Joiner.on(", ").skipNulls().join(faction.getFactionsWithRelation(Relation.TRUCE).stream().map(Faction::getName).collect(Collectors.toSet())),
+                    "{allies}", allyFactions.isEmpty() ? "None" : Joiner.on(", ").skipNulls().join(allyFactions.stream().map(Faction::getName).collect(Collectors.toSet())),
+                    "{enemies}", enemyFactions.isEmpty() ? "None" : Joiner.on(", ").skipNulls().join(enemyFactions.stream().map(Faction::getName).collect(Collectors.toSet())),
+                    "{truces}", truceFactions.isEmpty() ? "None" : Joiner.on(", ").skipNulls().join(truceFactions.stream().map(Faction::getName).collect(Collectors.toSet())),
                     "{online-member-count}", String.valueOf(onlineAndOfflinePlayers.getValue().size()),
                     "{offline-member-count}", String.valueOf(onlineAndOfflinePlayers.getKey().size()),
                     "{total-member-count}", String.valueOf(faction.getFactionPlayerSet().size()),
-                    "{online-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getValue().stream().map(FactionPlayer::getLastKnownName).collect(Collectors.toSet())),
-                    "{offline-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getKey().stream().map(FactionPlayer::getLastKnownName).collect(Collectors.toSet())));
+                    "{online-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getValue().stream().map(FactionPlayer::getFormattedPlayerName).collect(Collectors.toSet())),
+                    "{offline-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getKey().stream().map(FactionPlayer::getFormattedPlayerName).collect(Collectors.toSet())));
 
             /*"&6Description: &f{description}",
                     "&6Claims / Power / Max-power: &f{claims-amount}/{power}/{max-power}",

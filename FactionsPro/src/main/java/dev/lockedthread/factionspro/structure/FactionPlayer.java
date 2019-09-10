@@ -2,6 +2,7 @@ package dev.lockedthread.factionspro.structure;
 
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
+import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
 import dev.lockedthread.factionspro.structure.factions.Faction;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,9 @@ public class FactionPlayer {
     private String lastKnownName;
 
     public FactionPlayer(OfflinePlayer offlinePlayer) {
+        if (offlinePlayer.isOnline()) {
+            this.player = offlinePlayer.getPlayer();
+        }
         this.uuid = offlinePlayer.getUniqueId();
         this.lastKnownName = offlinePlayer.getName();
 
@@ -70,11 +74,28 @@ public class FactionPlayer {
         return faction;
     }
 
+    public Relation getRelation(Faction faction) {
+        return getFaction().getRelation(faction);
+    }
+
+    public String getFormattedPlayerName() {
+        String icon = role == null ? Role.MEMBER.getIcon() : role.getIcon();
+        return icon + getLastKnownName();
+    }
+
     public void setFaction(Faction faction) {
+        setFaction(faction, true, true);
+    }
+
+    public void setFaction(Faction faction, boolean updateMap, boolean recalculatePower) {
         this.faction = faction;
         this.factionUUID = faction.getUuid();
-        this.faction.getFactionPlayerSet().add(this);
-        this.faction.recalculatePower();
+        if (updateMap) {
+            this.faction.getFactionPlayerSet().add(this);
+        }
+        if (recalculatePower) {
+            this.faction.recalculatePower();
+        }
     }
 
     public void logout() {

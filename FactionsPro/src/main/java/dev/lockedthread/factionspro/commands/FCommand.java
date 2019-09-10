@@ -134,7 +134,7 @@ public abstract class FCommand {
     }
 
     public boolean hasSubCommands() {
-        return ((AtomicReference) subCommands).get() != null;
+        return ((AtomicReference) subCommands).get() != null && !getSubCommands().isEmpty();
     }
 
     public void msg(String... messages) {
@@ -148,31 +148,44 @@ public abstract class FCommand {
     }
 
     public boolean perform(CommandContext commandContext) {
+        this.commandContext = null;
         System.out.println("getClass().getName() = " + getClass().getName());
         System.out.println("toString() = " + toString() + "\n");
+        System.out.println("0");
         if (commandContext.getArguments().length > 0) {
+            System.out.println("1");
             if (hasSubCommands()) {
+                System.out.println("2");
                 FCommand subCommand = getSubCommands().get(commandContext.getArguments()[0]);
                 if (subCommand != null) {
+                    System.out.println("3");
                     if (fCommandCheck(commandContext.getSender(), subCommand, true)) {
-                        @NotNull String[] args = Arrays.copyOfRange(commandContext.getArguments(), 0, commandContext.getArguments().length - 1);
+                        @NotNull String[] args = Arrays.copyOfRange(commandContext.getArguments(), 1, commandContext.getArguments().length);
+                        System.out.println("args = " + Arrays.toString(args));
                         commandContext.setLabel(commandContext.getArguments()[0]);
                         commandContext.setArguments(args);
-                        subCommand.perform(commandContext);
-                        return true;
+                        System.out.println("4 return true");
+                        System.out.println("commandContext = " + commandContext);
+                        return subCommand.perform(commandContext);
                     }
+                    System.out.println("5 return false");
                     return false;
                 }
             }
         }
+        System.out.println("6");
         if (fCommandCheck(commandContext.getSender(), this, true)) {
+            System.out.println("7");
             this.commandContext = commandContext;
             try {
+                System.out.println("8 execute");
                 execute();
             } catch (ArgumentParseException e) {
+                System.out.println("9 send exception");
                 e.getSenderConsumer().accept(commandContext.getSender());
             }
             this.commandContext = null;
+            System.out.println("0 return true");
             return true;
         }
         return false;

@@ -38,7 +38,7 @@ public class FactionMap implements Map<Object, Faction> {
         if (value instanceof Faction) {
             return stringFactionHashMap.containsValue(value) && uuidFactionHashMap.containsValue(value);
         } else {
-            return false;
+            throw new RuntimeException("Unable to parse the object value as a Faction, tf you expect me to do here?");
         }
     }
 
@@ -49,14 +49,22 @@ public class FactionMap implements Map<Object, Faction> {
         } else if (key instanceof UUID) {
             return stringFactionHashMap.get(key);
         } else {
-            return null;
+            throw new RuntimeException("Unable to parse the object key as a string or uuid, tf you expect me to do here?");
         }
     }
 
     @Nullable
     @Override
     public Faction put(Object key, Faction value) {
-        return null;
+        if (key instanceof String) {
+            stringFactionHashMap.put((String) key, value);
+            return uuidFactionHashMap.put(value.getUuid(), value);
+        } else if (key instanceof UUID) {
+            uuidFactionHashMap.put(value.getUuid(), value);
+            return stringFactionHashMap.put(value.getName(), value);
+        } else {
+            throw new RuntimeException("Unable to parse the object key as a string or uuid, tf you expect me to do here?");
+        }
     }
 
     @Override

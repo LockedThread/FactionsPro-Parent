@@ -57,7 +57,7 @@ public class YamlConfig extends Config {
                     messageEnum.setMessage(getString("messages." + messageEnum.getConfigKey()));
                 }
             } else {
-                set("messages." + messageEnum.getConfigKey(), messageEnum.getUnformattedMessage());
+                set("messages." + messageEnum.getConfigKey(), messageEnum.isArrayMessage() ? messageEnum.getArrayMessage() : messageEnum.getUnformattedMessage());
             }
         }
         save();

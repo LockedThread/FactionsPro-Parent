@@ -88,6 +88,8 @@ public class Faction {
             return ((SystemFaction) faction).getGlobalRelation();
         } else if (faction == null) {
             return Relation.getDefaultRelation();
+        } else if (this.getName().equals(faction.getName())) {
+            return Relation.MEMBER;
         } else if (relationMap == null) {
             return Relation.getDefaultRelation();
         }
@@ -105,6 +107,9 @@ public class Faction {
     }
 
     public Set<Faction> getFactionsWithRelation(Relation relation) {
+        if (relationMap == null) {
+            return Collections.emptySet();
+        }
         return relationMap.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == relation)

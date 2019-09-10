@@ -34,7 +34,10 @@ public class FCommandExecutor implements CommandExecutor {
         String realLabel = colonIndex != -1 ? label.substring(colonIndex + 1) : label;
         FCommand fCommand = fCommandMap.get(realLabel);
         if (fCommand != null) {
-            return fCommand.perform(new ImmutableCommandContext(sender, "/" + realLabel + " " + Joiner.on(" ").skipNulls().join(args), args, realLabel, sender instanceof Player ? FactionsPro.get().getFactionPlayerMap().get(((Player) sender).getUniqueId()) : null));
+            return fCommand.perform(new ImmutableCommandContext(sender, "/" + realLabel + " " + Joiner.on(" ").skipNulls().join(args),
+                    args,
+                    realLabel,
+                    sender instanceof Player ? FactionsPro.get().getFactionPlayerMap().get(((Player) sender).getUniqueId()) : null));
         }
         throw new RuntimeException("Unable to find registered FCommand even though it's registered to this executor");
     }

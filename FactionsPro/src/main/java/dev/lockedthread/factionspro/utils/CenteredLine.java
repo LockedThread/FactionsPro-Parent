@@ -16,13 +16,19 @@ public class CenteredLine {
 
     private final String data;
     private final String code;
+    private final String colorCodeString;
 
     public CenteredLine(String unformattedLine) {
         Matcher parenthesisMatcher = PARENTHESIS_PATTERN.matcher(unformattedLine);
         parenthesisMatcher.find();
-        if ((this.code = parenthesisMatcher.group(1)) == null) {
+        String parenthesisData = parenthesisMatcher.group(1);
+        if (parenthesisData == null) {
             throw new RuntimeException("Unable to find the code in between parenthesis in the string, \"" + unformattedLine + "\"");
         }
+        String[] split = parenthesisData.split("\\|");
+        this.colorCodeString = split[0];
+        this.code = split[1];
+
         Matcher dataMatcher = DATA_PATTERN.matcher(unformattedLine);
         dataMatcher.find();
         if ((this.data = dataMatcher.group(1)) == null) {
@@ -31,12 +37,9 @@ public class CenteredLine {
     }
 
     public String getFormattedCenteredLine() {
-        String strippedCode = STRIP_COLOR_CODE_PATTERN.matcher(code).replaceAll("");
-        String strippedData = STRIP_COLOR_CODE_PATTERN.matcher(data).replaceAll("");
+        int fixesLength = (MINECRAFT_CHAT_CHAR_LENGTH - STRIP_COLOR_CODE_PATTERN.matcher(data).replaceAll("").length()) / 2;
 
-        int fixesLength = MINECRAFT_CHAT_CHAR_LENGTH - strippedData.length() / 2;
-
-        String fixes = code + StringUtils.repeat(strippedCode, fixesLength - 1);
+        String fixes = colorCodeString + StringUtils.repeat(code, fixesLength - 1);
         return fixes + data + fixes;
     }
 

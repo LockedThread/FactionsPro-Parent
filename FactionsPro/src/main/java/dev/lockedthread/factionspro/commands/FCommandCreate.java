@@ -27,16 +27,16 @@ public class FCommandCreate extends FCommand {
             } else {
                 String rawArgument = commandContext.getRawArgument(0);
 
-                for (char blockedChar : FactionsConfig.factions_create_blocked_chars) {
-                    if (rawArgument.indexOf(blockedChar) != -1) {
-                        msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_UNABLE_TO_CREATE_FACTION_WITH_CHAR, "{char}", Character.toString(blockedChar));
+                for (String blockedChar : FactionsConfig.factions_create_blocked_chars) {
+                    if (rawArgument.contains(blockedChar)) {
+                        msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_UNABLE_TO_CREATE_FACTION_WITH_CHAR, "{char}", blockedChar);
                         return;
                     }
                 }
 
                 Faction faction = new Faction(rawArgument, commandContext.getFactionPlayer());
                 FactionsPro.get().getFactionMap().put(faction.getUuid(), faction);
-                commandContext.getFactionPlayer().setFaction(faction);
+                commandContext.getFactionPlayer().setFaction(faction, false, false);
                 msg(FactionsMessages.COMMAND_FACTIONS_CREATE_SUCCESS, "{name}", faction.getName());
                 if (FactionsConfig.factions_create_broadcast_enabled) {
                     Bukkit.broadcastMessage(FactionsMessages.COMMAND_FACTIONS_CREATE_BROADCAST.getMessage().replace("{player}", commandContext.getSender().getName()).replace("{name}", faction.getName()));

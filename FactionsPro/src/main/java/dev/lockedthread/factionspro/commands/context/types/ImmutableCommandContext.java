@@ -4,28 +4,29 @@ import dev.lockedthread.factionspro.commands.arguments.Argument;
 import dev.lockedthread.factionspro.commands.arguments.types.ImmutableArgument;
 import dev.lockedthread.factionspro.commands.context.CommandContext;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @EqualsAndHashCode
 @ToString(doNotUseGetters = true)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ImmutableCommandContext implements CommandContext {
 
+    @NotNull
     private final CommandSender commandSender;
+    @NotNull
     private final String fullCommandString;
-    @NonNull
-    private String[] arguments;
-    @NonNull
-    private String label;
-    @NotNull
+    @Nullable
     private final FactionPlayer factionPlayer;
-
     @NotNull
+    private String[] arguments;
+    @Nullable
+    private String label;
+
     @Override
     public FactionPlayer getFactionPlayer() {
         return factionPlayer;

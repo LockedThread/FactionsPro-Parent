@@ -82,11 +82,22 @@ public class ArgumentRegistry {
 
         register(Faction.class, () -> s -> Optional.ofNullable(FactionsPro.get().getFactionMap().get(s)));
         register(FactionPlayer.class, () -> s -> {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(s);
-            if (!offlinePlayer.hasPlayedBefore()) {
-                return Optional.empty();
+            System.out.println("ArgumentRegistry.ArgumentRegistry - FactionPlayer.class");
+            OfflinePlayer player = Bukkit.getPlayer(s);
+            System.out.println("0 player = " + player);
+            if (player == null) {
+                System.out.println("1 player = " + player);
+                player = Bukkit.getOfflinePlayer(s);
+                System.out.println("2 player = " + player);
+                if (!player.hasPlayedBefore()) {
+                    System.out.println("player = " + player + " never played before");
+                    return Optional.empty();
+                }
             }
-            return Optional.ofNullable(FactionsPro.get().getFactionPlayerMap().get(offlinePlayer.getUniqueId()));
+
+            FactionPlayer factionPlayer = FactionsPro.get().getFactionPlayerMap().get(player.getUniqueId());
+            System.out.println("3 factionPlayer = " + factionPlayer);
+            return Optional.ofNullable(factionPlayer);
         });
     }
 

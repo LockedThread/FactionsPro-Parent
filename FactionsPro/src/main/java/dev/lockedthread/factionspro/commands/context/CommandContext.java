@@ -4,10 +4,11 @@ import dev.lockedthread.factionspro.commands.arguments.Argument;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface CommandContext {
 
-    @NotNull
+    @Nullable
     FactionPlayer getFactionPlayer();
 
     @NotNull
