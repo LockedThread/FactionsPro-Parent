@@ -80,7 +80,7 @@ public class ChunkPosition {
             world.loadChunk(x, z);
         }
         try {
-            world.getChunkAtAsync(x, z).thenApply(ChunkPosition::getBlocks).get();
+            return world.getChunkAtAsync(x, z).thenApply(ChunkPosition::getBlocks).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
