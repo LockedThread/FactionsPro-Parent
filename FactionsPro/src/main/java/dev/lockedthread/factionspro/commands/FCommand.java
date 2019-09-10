@@ -36,17 +36,15 @@ public abstract class FCommand {
     @Nullable
     private final String[] aliases;
     private final boolean requirePlayer, requireConsole;
-
+    @NotNull
+    @Getter(lazy = true)
+    private final Map<String, FCommand> subCommands = new HashMap<>();
     /**
      * Temporarily field, not null when command is being processed.
      */
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     public CommandContext commandContext;
-
-    @NotNull
-    @Getter(lazy = true)
-    private final Map<String, FCommand> subCommands = new HashMap<>();
 
     public FCommand() {
         Data data = getClass().getAnnotation(Data.class);
@@ -105,14 +103,14 @@ public abstract class FCommand {
         }
     }
 
-    public abstract void execute() throws ArgumentParseException;
-
     private static String replacePlaceholders(String message, String[] placeholders) {
         for (int i = 0; i < placeholders.length; i += 2) {
             message = message.replace(placeholders[i], placeholders[i + 1]);
         }
         return message;
     }
+
+    public abstract void execute() throws ArgumentParseException;
 
     public void registerSubCommand(FCommand fCommand) {
         if (fCommand.getAliases() != null) {

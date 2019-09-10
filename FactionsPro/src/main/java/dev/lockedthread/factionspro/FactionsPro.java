@@ -26,6 +26,10 @@ public class FactionsPro extends Module {
     private FactionMap factionMap;
     private Map<UUID, FactionPlayer> factionPlayerMap;
 
+    public static FactionsPro get() {
+        return instance;
+    }
+
     @Override
     public void enable() {
         instance = this;
@@ -48,9 +52,5 @@ public class FactionsPro extends Module {
     @Override
     public void disable() {
         instance = null;
-    }
-
-    public static FactionsPro get() {
-        return instance;
     }
 }

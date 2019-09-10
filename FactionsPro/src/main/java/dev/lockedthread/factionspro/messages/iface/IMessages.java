@@ -6,11 +6,11 @@ public interface IMessages {
 
     String getMessage();
 
+    void setMessage(String message);
+
     String[] getArrayMessage();
 
     String getUnformattedMessage();
-
-    void setMessage(String message);
 
     boolean isArrayMessage();
 

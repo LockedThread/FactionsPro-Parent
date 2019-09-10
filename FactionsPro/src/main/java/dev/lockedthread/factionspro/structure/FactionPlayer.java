@@ -23,10 +23,10 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class FactionPlayer {
 
+    private final UUID uuid;
     private transient Faction faction;
     private transient Player player;
     private UUID factionUUID;
-    private final UUID uuid;
     private double power;
     private double maxPower;
     private Role role;
@@ -74,6 +74,10 @@ public class FactionPlayer {
         return faction;
     }
 
+    public void setFaction(Faction faction) {
+        setFaction(faction, true, true, false);
+    }
+
     public Relation getRelation(Faction faction) {
         return getFaction().getRelation(faction);
     }
@@ -81,10 +85,6 @@ public class FactionPlayer {
     public String getFormattedPlayerName() {
         String icon = role == null ? Role.MEMBER.getIcon() : role.getIcon();
         return icon + getLastKnownName();
-    }
-
-    public void setFaction(Faction faction) {
-        setFaction(faction, true, true, false);
     }
 
     public void setFaction(Faction faction, boolean updateMap, boolean recalculatePower, boolean ignoreLeader) {
