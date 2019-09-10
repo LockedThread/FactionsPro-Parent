@@ -16,6 +16,19 @@ public enum FactionsMessages implements IMessages {
     COMMAND_FACTIONS_CREATE_SUCCESS("&a&lSUCCESS &8» &aYou have created your faction named {name}."),
     COMMAND_FACTIONS_CREATE_BROADCAST(true, "", "&e&lNOTICE &8» &e{player} &fhas created a faction named &e{name}.", ""),
 
+    COMMAND_FACTIONS_LEAVE_ERROR_YOU_ARE_LEADER("&c&lERROR &8» &cYou can't leave a faction you lead! Do /f disband to disband the faction."),
+    COMMAND_FACTIONS_LEAVE_ERROR_NO_FACTION("&c&lERROR &8» &cYou're not in a faction to leave!"),
+    COMMAND_FACTIONS_LEAVE_ERROR_TOO_MANY_ARGUMENTS("&c&lERROR &8» &cToo many arguments!"),
+    COMMAND_FACTIONS_LEAVE_SUCCESS("&a&lSUCCESS &8» &aYou have left your faction."),
+    COMMAND_FACTIONS_LEAVE_FACTION_BROADCAST("", "&e&lNOTICE &8» &e{player} &fhas left your faction!", ""),
+
+    COMMAND_FACTIONS_DISBAND_ERROR_YOU_ARE_NOT_LEADER("&c&lERROR &8» &cYou can't disband a faction you don't lead! Do /f leave to leave the faction."),
+    COMMAND_FACTIONS_DISBAND_ERROR_NO_FACTION("&c&lERROR &8» &cYou're not in a faction to disband!"),
+    COMMAND_FACTIONS_DISBAND_ERROR_TOO_MANY_ARGUMENTS("&c&lERROR &8» &cToo many arguments!"),
+    COMMAND_FACTIONS_DISBAND_UNABLE_TO_FIND_FACTION_OR_PLAYER("&c&lERROR &8» &cUnable to find faction or player with name '{name}'"),
+    COMMAND_FACTIONS_DISBAND_SUCCESS("&a&lSUCCESS &8» &aYou have disbanded {name}."),
+    COMMAND_FACTIONS_DISBAND_GLOBAL_BROADCAST("", "&e&lNOTICE &8» &e{player} &fhas disbanded &e{name}.", ""),
+
     COMMAND_FACTIONS_SHOW_ERROR_TOO_MANY_ARGUMENTS("&c&lERROR &8» &cToo many arguments! Can't find multi-word factions or players."),
     COMMAND_FACTIONS_SHOW_UNABLE_TO_FIND_FACTION_OR_PLAYER("&c&lERROR &8» &cUnable to find faction or player with name '{name}'"),
     COMMAND_FACTIONS_SHOW_RESPONSE_HEADER("<center-line(&7&m|-)> {relation-color}{faction} <center-line>"),

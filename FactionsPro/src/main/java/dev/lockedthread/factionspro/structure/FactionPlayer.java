@@ -84,10 +84,21 @@ public class FactionPlayer {
     }
 
     public void setFaction(Faction faction) {
-        setFaction(faction, true, true);
+        setFaction(faction, true, true, false);
     }
 
-    public void setFaction(Faction faction, boolean updateMap, boolean recalculatePower) {
+    public void setFaction(Faction faction, boolean updateMap, boolean recalculatePower, boolean ignoreLeader) {
+        if (this.faction != null) {
+            if (this.role == Role.LEADER && !ignoreLeader) {
+                this.faction.disband(null);
+            }
+            if (updateMap) {
+                this.faction.getFactionPlayerSet().add(this);
+            }
+            if (recalculatePower) {
+                this.faction.recalculatePower();
+            }
+        }
         this.faction = faction;
         this.factionUUID = faction.getUuid();
         if (updateMap) {
@@ -96,6 +107,7 @@ public class FactionPlayer {
         if (recalculatePower) {
             this.faction.recalculatePower();
         }
+        this.role = Role.MEMBER;
     }
 
     public void logout() {
@@ -114,5 +126,9 @@ public class FactionPlayer {
 
     public boolean isOnline() {
         return player != null && player.isOnline();
+    }
+
+    public boolean hasFaction() {
+        return factionUUID != null;
     }
 }

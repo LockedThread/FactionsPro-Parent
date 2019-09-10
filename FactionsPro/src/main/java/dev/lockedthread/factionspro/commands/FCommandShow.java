@@ -23,7 +23,7 @@ public class FCommandShow extends FCommand {
 
     @Override
     public void execute() throws ArgumentParseException {
-        Faction faction = null;
+        Faction faction;
         if (commandContext.getArguments().length == 0) {
             faction = commandContext.getFactionPlayer().getFaction();
         } else if (commandContext.getArguments().length == 1) {
@@ -70,14 +70,6 @@ public class FCommandShow extends FCommand {
                     "{total-member-count}", String.valueOf(faction.getFactionPlayerSet().size()),
                     "{online-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getValue().stream().map(FactionPlayer::getFormattedPlayerName).collect(Collectors.toSet())),
                     "{offline-list}", Joiner.on(", ").skipNulls().join(onlineAndOfflinePlayers.getKey().stream().map(FactionPlayer::getFormattedPlayerName).collect(Collectors.toSet())));
-
-            /*"&6Description: &f{description}",
-                    "&6Claims / Power / Max-power: &f{claims-amount}/{power}/{max-power}",
-                    "&6Allies: {ally-color}{allies}",
-                    "&6Enemies: {enemy-color}{enemies}",
-                    "&6Truces: {truce-color}{truces}",
-                    "&6Online ({online-member-count}/{total-member-count}): {online-list}",
-                    "&6Online ({offline-member-count}/{total-member-count}): {offline-list}"*/
         } else {
             msg(FactionsMessages.COMMAND_FACTIONS_SHOW_UNABLE_TO_FIND_FACTION_OR_PLAYER, "{name}", commandContext.getRawArgument(0));
         }

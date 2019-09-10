@@ -67,8 +67,14 @@ public class FactionsConfig extends YamlConfig {
     @ConfigEntry(key = "factions.system-factions.safe-zone")
     public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE, UUID.randomUUID());
 
-    @ConfigEntry(comments = {"Whether or not faction creations broadcasts are enabled"})
+    @ConfigEntry(comments = {"Whether or not faction creations broadcast"})
     public static boolean factions_create_broadcast_enabled = true;
+
+    @ConfigEntry(comments = {"Whether or not faction disbands broadcast"})
+    public static boolean factions_disband_broadcast_enabled = true;
+
+    @ConfigEntry(comments = {"Whether or not faction disbands broadcast"}, key = "factions.leave.faction-broadcast.enabled")
+    public static boolean factions_leave_faction_broadcast_enabled = true;
 
     @ConfigEntry(key = "factions.create.blocked-chars")
     public static List<String> factions_create_blocked_chars = new ArrayList<>(Arrays.asList("-", "=", "+", "_", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "`", "~", "[", "{", "]", "}", "|", "\\", "\"", "\"", ";", ":", ",", "<", ">", ".", "/"));

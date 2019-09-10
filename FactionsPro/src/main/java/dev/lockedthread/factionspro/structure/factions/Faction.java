@@ -2,6 +2,7 @@ package dev.lockedthread.factionspro.structure.factions;
 
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
+import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
@@ -11,6 +12,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -132,4 +136,24 @@ public class Faction {
     }
 
 
+    public boolean disband(CommandSender sender) {
+        FactionsPro.get().getFactionMap().remove(this);
+        this.leader = null;
+        this.chunkPositionSet = null;
+        for (FactionPlayer factionPlayer : factionPlayerSet) {
+            factionPlayer.setFaction(FactionsConfig.systemFactionWilderness, true, true, true);
+        }
+
+        String player = sender instanceof Player ? sender.getName() : "CONSOLE";
+        if (FactionsConfig.factions_disband_broadcast_enabled) {
+            for (String line : FactionsMessages.COMMAND_FACTIONS_DISBAND_GLOBAL_BROADCAST.getArrayMessage()) {
+                Bukkit.broadcastMessage(line.replace("{player}", player).replace("{name}", this.getName()));
+            }
+        }
+        return true;
+    }
+
+    public boolean isPermanent() {
+        return this instanceof SystemFaction;
+    }
 }

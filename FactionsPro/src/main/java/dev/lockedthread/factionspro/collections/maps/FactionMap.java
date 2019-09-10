@@ -69,7 +69,11 @@ public class FactionMap implements Map<Object, Faction> {
 
     @Override
     public Faction remove(Object key) {
-        return key instanceof String ? uuidFactionHashMap.remove(stringFactionHashMap.remove(key).getUuid()) : stringFactionHashMap.remove(uuidFactionHashMap.remove(key).getName());
+        if (key instanceof Faction) {
+            return stringFactionHashMap.remove(uuidFactionHashMap.remove(((Faction) key).getUuid()).getName());
+        } else {
+            return key instanceof String ? uuidFactionHashMap.remove(stringFactionHashMap.remove(key).getUuid()) : stringFactionHashMap.remove(uuidFactionHashMap.remove(key).getName());
+        }
     }
 
     @Override
