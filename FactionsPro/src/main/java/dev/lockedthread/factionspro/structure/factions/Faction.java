@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -144,6 +145,7 @@ public class Faction {
 
     public boolean disband(CommandSender sender) {
         FactionsPro.get().getFactionMap().remove(this);
+        this.leader.setRole(Role.MEMBER);
         this.leader = null;
         this.chunkPositionSet = null;
         for (FactionPlayer factionPlayer : factionPlayerSet) {
@@ -153,7 +155,7 @@ public class Faction {
         String player = sender instanceof Player ? sender.getName() : "CONSOLE";
         if (FactionsConfig.factions_disband_broadcast_enabled) {
             for (String line : FactionsMessages.COMMAND_FACTIONS_DISBAND_GLOBAL_BROADCAST.getArrayMessage()) {
-                Bukkit.broadcastMessage(line.replace("{player}", player).replace("{name}", this.getName()));
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', line.replace("{player}", player).replace("{name}", this.getName())));
             }
         }
         return true;

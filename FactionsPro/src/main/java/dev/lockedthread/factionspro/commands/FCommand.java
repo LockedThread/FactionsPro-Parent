@@ -104,6 +104,7 @@ public abstract class FCommand {
     }
 
     private static String replacePlaceholders(String message, String[] placeholders) {
+        System.out.println("message = " + message + ", placeholders = " + Arrays.toString(placeholders));
         for (int i = 0; i < placeholders.length; i += 2) {
             message = message.replace(placeholders[i], placeholders[i + 1]);
         }

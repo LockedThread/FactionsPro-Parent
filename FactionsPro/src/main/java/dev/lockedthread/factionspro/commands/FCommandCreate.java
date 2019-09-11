@@ -6,6 +6,7 @@ import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.structure.factions.Faction;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.util.Optional;
 
@@ -24,6 +25,8 @@ public class FCommandCreate extends FCommand {
             Optional<Faction> factionOptional = commandContext.getArgument(Faction.class, 0).parse();
             if (factionOptional.isPresent()) {
                 msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_FACTION_EXISTS);
+            } else if (commandContext.getFactionPlayer().hasFaction()) {
+                msg(FactionsMessages.COMMAND_FACTIONS_CREATE_ERROR_ALREADY_HAVE_FACTION);
             } else {
                 String rawArgument = commandContext.getRawArgument(0);
 
@@ -36,10 +39,12 @@ public class FCommandCreate extends FCommand {
 
                 Faction faction = new Faction(rawArgument, commandContext.getFactionPlayer());
                 FactionsPro.get().getFactionMap().put(faction.getUuid(), faction);
-                commandContext.getFactionPlayer().setFaction(faction, false, false);
+                commandContext.getFactionPlayer().setFaction(faction, false, false, true);
                 msg(FactionsMessages.COMMAND_FACTIONS_CREATE_SUCCESS, "{name}", faction.getName());
                 if (FactionsConfig.factions_create_broadcast_enabled) {
-                    Bukkit.broadcastMessage(FactionsMessages.COMMAND_FACTIONS_CREATE_BROADCAST.getMessage().replace("{player}", commandContext.getSender().getName()).replace("{name}", faction.getName()));
+                    for (String line : FactionsMessages.COMMAND_FACTIONS_CREATE_BROADCAST.getArrayMessage()) {
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', line.replace("{player}", commandContext.getSender().getName()).replace("{name}", faction.getName())));
+                    }
                 }
             }
         } else {

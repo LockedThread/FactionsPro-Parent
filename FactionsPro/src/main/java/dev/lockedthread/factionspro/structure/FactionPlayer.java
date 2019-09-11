@@ -74,10 +74,6 @@ public class FactionPlayer {
         return faction;
     }
 
-    public void setFaction(Faction faction) {
-        setFaction(faction, true, true, false);
-    }
-
     public Relation getRelation(Faction faction) {
         return getFaction().getRelation(faction);
     }
@@ -85,6 +81,10 @@ public class FactionPlayer {
     public String getFormattedPlayerName() {
         String icon = role == null ? Role.MEMBER.getIcon() : role.getIcon();
         return icon + getLastKnownName();
+    }
+
+    public void setFaction(Faction faction) {
+        setFaction(faction, true, true, false);
     }
 
     public void setFaction(Faction faction, boolean updateMap, boolean recalculatePower, boolean ignoreLeader) {
@@ -107,7 +107,9 @@ public class FactionPlayer {
         if (recalculatePower) {
             this.faction.recalculatePower();
         }
-        this.role = Role.MEMBER;
+        if (!ignoreLeader) {
+            this.role = Role.MEMBER;
+        }
     }
 
     public void logout() {
@@ -129,6 +131,9 @@ public class FactionPlayer {
     }
 
     public boolean hasFaction() {
-        return factionUUID != null;
+        if (factionUUID != null) {
+            return faction == null ? FactionsPro.get().getFactionMap().get(factionUUID).isPermanent() : !faction.isPermanent();
+        }
+        return false;
     }
 }

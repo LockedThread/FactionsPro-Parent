@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
+@FCommand.Data(name = "disband", permission = "factionspro.commands.disband", aliases = {"destroy"}, usage = "/f disband [faction]", description = "The command to disband factions")
 public class FCommandDisband extends FCommand {
 
     public FCommandDisband() {
@@ -26,8 +27,9 @@ public class FCommandDisband extends FCommand {
             } else if (!canDisband) {
                 msg(FactionsMessages.COMMAND_FACTIONS_DISBAND_ERROR_YOU_ARE_NOT_LEADER);
                 return;
-            } else {
+            } else if (commandContext instanceof ConsoleCommandSender) {
                 msg("&cCan't infer faction since you are console, /f disband [faction/player]");
+                return;
             }
         } else if (commandContext.getArguments().length == 1) {
             Optional<Faction> factionOptional = commandContext.getArgument(Faction.class, 0).parse();
@@ -47,10 +49,9 @@ public class FCommandDisband extends FCommand {
             return;
         }
         if (faction != null) {
-            if (faction.disband()) {
+            if (faction.disband(commandContext.getSender())) {
                 msg(FactionsMessages.COMMAND_FACTIONS_DISBAND_SUCCESS, "{name}", faction.getName());
             }
-
         } else {
             msg(FactionsMessages.COMMAND_FACTIONS_DISBAND_UNABLE_TO_FIND_FACTION_OR_PLAYER, "{name}", commandContext.getRawArgument(0));
         }
