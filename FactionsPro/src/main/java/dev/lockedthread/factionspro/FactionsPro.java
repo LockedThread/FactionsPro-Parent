@@ -8,6 +8,7 @@ import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.modules.Module;
 import dev.lockedthread.factionspro.modules.annotations.ModuleInfo;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
+import dev.lockedthread.factionspro.structure.worldmatrix.WorldMatrix;
 import dev.lockedthread.factionspro.units.FactionPlayerUnit;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +46,7 @@ public class FactionsPro extends Module {
 
         // Temporary Memory Based Implementation
 
+        new WorldMatrix();
         this.factionMap = new FactionMap();
         this.factionPlayerMap = new HashMap<>();
     }
