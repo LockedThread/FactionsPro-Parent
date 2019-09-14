@@ -9,8 +9,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.command.CommandSender;
 
-import java.util.UUID;
-
 @ToString(doNotUseGetters = true)
 @Getter
 @Setter
@@ -19,7 +17,7 @@ public class SystemFaction extends Faction {
 
     private final Relation globalRelation;
 
-    public SystemFaction(String name, Relation globalRelation, UUID uuid) {
+    public SystemFaction(String name, Relation globalRelation) {
         super(name, null);
         this.globalRelation = globalRelation;
     }

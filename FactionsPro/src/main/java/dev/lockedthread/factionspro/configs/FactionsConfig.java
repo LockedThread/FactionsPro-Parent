@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class FactionsConfig extends YamlConfig {
 
@@ -65,11 +64,11 @@ public class FactionsConfig extends YamlConfig {
     public static Relation trueRelation = Relation.TRUCE;
 
     @ConfigEntry(key = "factions.system-factions.wilderness")
-    public static SystemFaction systemFactionWilderness = new SystemFaction("Wilderness", Relation.WILDERNESS, UUID.randomUUID());
+    public static SystemFaction systemFactionWilderness = new SystemFaction("Wilderness", Relation.WILDERNESS);
     @ConfigEntry(key = "factions.system-factions.war-zone")
-    public static SystemFaction systemFactionWarZone = new SystemFaction("Warzone", Relation.WAR_ZONE, UUID.randomUUID());
+    public static SystemFaction systemFactionWarZone = new SystemFaction("Warzone", Relation.WAR_ZONE);
     @ConfigEntry(key = "factions.system-factions.safe-zone")
-    public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE, UUID.randomUUID());
+    public static SystemFaction systemFactionSafeZone = new SystemFaction("SafeZone", Relation.SAFE_ZONE);
 
     @ConfigEntry(comments = {"Whether or not faction creations broadcast"})
     public static boolean factions_create_broadcast_enabled = true;

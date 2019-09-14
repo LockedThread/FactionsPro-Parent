@@ -111,7 +111,7 @@ public class SerializerRegistry {
                 if (relation == null) {
                     throw new RuntimeException("Unable to find relation with name " + name);
                 }
-                SystemFaction systemFaction = new SystemFaction(name, relation, uuid);
+                SystemFaction systemFaction = new SystemFaction(name, relation);
 
                 FactionsPro.get().getFactionMap().put(uuid, systemFaction);
                 return systemFaction;
