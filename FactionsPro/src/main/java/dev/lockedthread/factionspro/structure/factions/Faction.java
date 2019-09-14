@@ -7,7 +7,6 @@ import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
 import dev.lockedthread.factionspro.structure.factions.types.SystemFaction;
-import dev.lockedthread.factionspro.structure.position.ChunkPosition;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +38,6 @@ public class Faction {
     private transient final Set<FactionPlayer> factionPlayerSet;
 
     private transient FactionPlayer leader;
-    private transient Set<ChunkPosition> chunkPositionSet;
 
     private String description;
     private String name;
@@ -61,7 +59,6 @@ public class Faction {
             this.factionPlayerSet = new HashSet<>(0);
             this.power = 0.0;
         }
-        this.chunkPositionSet = new HashSet<>();
         this.maxPower = FactionsConfig.factions_power_default_max_power;
     }
 
@@ -147,7 +144,6 @@ public class Faction {
         FactionsPro.get().getFactionMap().remove(this);
         this.leader.setRole(Role.MEMBER);
         this.leader = null;
-        this.chunkPositionSet = null;
         for (FactionPlayer factionPlayer : factionPlayerSet) {
             factionPlayer.setFaction(FactionsConfig.systemFactionWilderness, true, true, true);
         }
