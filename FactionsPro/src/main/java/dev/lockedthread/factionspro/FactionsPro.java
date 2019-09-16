@@ -43,7 +43,6 @@ public class FactionsPro extends Module {
 
     private void setupDatabase() {
 
-
         // Temporary Memory Based Implementation
 
         new WorldMatrix();

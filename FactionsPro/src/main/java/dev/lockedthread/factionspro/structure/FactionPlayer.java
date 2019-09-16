@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.structure;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.structure.enums.Relation;
@@ -10,11 +11,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @ToString(doNotUseGetters = true, exclude = {"faction"})
@@ -31,13 +33,12 @@ public class FactionPlayer {
     private double maxPower;
     private Role role;
     private String lastKnownName;
+    private Location lastKnownLocation;
 
-    public FactionPlayer(OfflinePlayer offlinePlayer) {
-        if (offlinePlayer.isOnline()) {
-            this.player = offlinePlayer.getPlayer();
-        }
-        this.uuid = offlinePlayer.getUniqueId();
-        this.lastKnownName = offlinePlayer.getName();
+    @JsonCreator
+    public FactionPlayer(UUID uuid, String name) {
+        this.uuid = uuid;
+        this.lastKnownName = name;
 
         /* Power */
         this.maxPower = FactionsConfig.players_power_maximum;
@@ -48,6 +49,14 @@ public class FactionPlayer {
         }
 
         setFaction(FactionsConfig.systemFactionWilderness);
+    }
+
+    public FactionPlayer(OfflinePlayer offlinePlayer) {
+        this(offlinePlayer.getUniqueId(), offlinePlayer.getName());
+        if (offlinePlayer.isOnline()) {
+            this.player = offlinePlayer.getPlayer();
+            this.lastKnownLocation = player.getLocation();
+        }
     }
 
     public void die() {
@@ -116,9 +125,14 @@ public class FactionPlayer {
         this.player = null;
     }
 
-    @Nullable
-    public Player getPlayer() {
-        return player;
+    @NotNull
+    public Optional<Player> getPlayer() {
+        if (player != null) {
+            return Optional.of(player);
+        } else {
+            OfflinePlayer offlinePlayer = getOfflinePlayer();
+            return offlinePlayer.isOnline() ? Optional.ofNullable(offlinePlayer.getPlayer()) : Optional.empty();
+        }
     }
 
     @NotNull

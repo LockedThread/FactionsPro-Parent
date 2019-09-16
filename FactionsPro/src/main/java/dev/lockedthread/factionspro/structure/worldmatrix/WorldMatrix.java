@@ -1,5 +1,6 @@
 package dev.lockedthread.factionspro.structure.worldmatrix;
 
+import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.structure.factions.Faction;
 import dev.lockedthread.factionspro.structure.position.ChunkPosition;
 import dev.lockedthread.factionspro.structure.worldmatrix.map.WorldMatrixMap;
@@ -17,6 +18,14 @@ public class WorldMatrix {
 
     public WorldMatrix() {
         instance = this;
+    }
+
+    public void setupWorldMatrixMap() {
+        for (Faction faction : FactionsPro.get().getFactionMap().values()) {
+            for (ChunkPosition chunkPosition : faction.getChunkPositions()) {
+                worldMatrixMap.put(chunkPosition, faction.getUuid());
+            }
+        }
     }
 
     public static WorldMatrix getInstance() {

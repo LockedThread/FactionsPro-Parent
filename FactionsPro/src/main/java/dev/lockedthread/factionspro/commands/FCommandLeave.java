@@ -5,6 +5,7 @@ import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
 import dev.lockedthread.factionspro.structure.enums.Role;
+import org.bukkit.entity.Player;
 
 @FCommand.Data(name = "leave", permission = "factionspro.commands.leave", usage = "/f leave", description = "The command to leave a faction", requirePlayer = true)
 public class FCommandLeave extends FCommand {
@@ -19,8 +20,9 @@ public class FCommandLeave extends FCommand {
                     if (FactionsConfig.factions_leave_faction_broadcast_enabled) {
                         for (FactionPlayer factionPlayer : commandContext.getFactionPlayer().getFaction().getFactionPlayerSet()) {
                             if (factionPlayer.isOnline()) {
+                                Player player = factionPlayer.getPlayer().get();
                                 for (String line : FactionsMessages.COMMAND_FACTIONS_LEAVE_FACTION_BROADCAST.getArrayMessage()) {
-                                    factionPlayer.getPlayer().sendMessage(line.replace("{player}", commandContext.getSender().getName()));
+                                    player.sendMessage(line.replace("{player}", commandContext.getSender().getName()));
                                 }
                             }
                         }

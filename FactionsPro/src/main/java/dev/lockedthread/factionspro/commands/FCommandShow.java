@@ -56,7 +56,7 @@ public class FCommandShow extends FCommand {
             msg(FactionsMessages.COMMAND_FACTIONS_SHOW_RESPONSE,
                     "{relation-color}", relationColor.toString(),
                     "{description}", faction.getDescription(),
-                    "{land-amount}", String.valueOf(faction.getChunkPositionSet().size()),
+                    "{land-amount}", String.valueOf(faction.getChunkPositions().size()),
                     "{power}", String.valueOf(faction.getPower()),
                     "{max-power}", String.valueOf(faction.getMaxPower()),
                     "{ally-color}", Relation.ALLY.getChatColor().toString(),

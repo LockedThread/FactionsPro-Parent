@@ -88,6 +88,8 @@ public class FactionsConfig extends YamlConfig {
     @ConfigEntry(comments = {"The default faction max power"}, key = "factions.default.power.max-power")
     public static double factions_power_default_max_power = 100.0;
 
+    public static boolean factions_overclaim_enabled = true;
+
     @Nullable
     private static FactionsConfig instance;
 

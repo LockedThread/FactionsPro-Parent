@@ -5,7 +5,13 @@ public class FCommandRoot extends FCommand {
 
     public FCommandRoot() {
         super();
-        registerSubCommands(FCommandHelp.class, FCommandStatistics.class, FCommandCreate.class, FCommandShow.class, FCommandLeave.class, FCommandDisband.class);
+        registerSubCommands(FCommandHelp.class,
+                FCommandStatistics.class,
+                FCommandCreate.class,
+                FCommandShow.class,
+                FCommandLeave.class,
+                FCommandDisband.class,
+                FCommandClaim.class);
     }
 
     @Override

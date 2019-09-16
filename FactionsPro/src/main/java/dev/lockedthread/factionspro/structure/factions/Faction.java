@@ -4,9 +4,12 @@ import dev.lockedthread.factionspro.FactionsPro;
 import dev.lockedthread.factionspro.configs.FactionsConfig;
 import dev.lockedthread.factionspro.messages.FactionsMessages;
 import dev.lockedthread.factionspro.structure.FactionPlayer;
+import dev.lockedthread.factionspro.structure.enums.ClaimResponse;
 import dev.lockedthread.factionspro.structure.enums.Relation;
 import dev.lockedthread.factionspro.structure.enums.Role;
 import dev.lockedthread.factionspro.structure.factions.types.SystemFaction;
+import dev.lockedthread.factionspro.structure.position.ChunkPosition;
+import dev.lockedthread.factionspro.structure.worldmatrix.WorldMatrix;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,12 +36,13 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 public class Faction {
 
-    private final UUID uuid;
-
     private transient final Set<FactionPlayer> factionPlayerSet;
-
+    private transient final Set<ChunkPosition> chunkPositions = new HashSet<>();
     private transient FactionPlayer leader;
 
+    private final UUID uuid;
+
+    private UUID leaderUUID;
     private String description;
     private String name;
     private double power;
@@ -53,6 +57,7 @@ public class Faction {
         this.leader = leader;
         if (leader != null) {
             (this.factionPlayerSet = new HashSet<>(1)).add(leader);
+            this.leaderUUID = leader.getUuid();
             leader.setRole(Role.LEADER);
             this.power = leader.getPower();
         } else {
@@ -71,6 +76,29 @@ public class Faction {
         for (FactionPlayer factionPlayer : factionPlayerSet) {
             this.power += factionPlayer.getPower();
         }
+    }
+
+    public ClaimResponse claim(FactionPlayer factionPlayer, ChunkPosition chunkPosition) {
+        if (factionPlayer != null) {
+            // TODO: Implement permission system
+        }
+
+        Faction factionAt = WorldMatrix.getInstance().getFactionAt(chunkPosition);
+        if (factionAt != null) {
+            if (FactionsConfig.factions_overclaim_enabled) {
+                if (!factionAt.isOverclaimAble()) {
+                    return ClaimResponse.UNABLE_TO_OVERCLAIM;
+                }
+            } else {
+                return ClaimResponse.SOMEONE_OWNS_THIS_LAND;
+            }
+        }
+        WorldMatrix.getInstance().getWorldMatrixMap().put(chunkPosition, this);
+        return ClaimResponse.SUCCESS;
+    }
+
+    public boolean isOverclaimAble() {
+        return power < chunkPositions.size();
     }
 
     @NotNull
@@ -159,5 +187,9 @@ public class Faction {
 
     public boolean isPermanent() {
         return this instanceof SystemFaction;
+    }
+
+    public FactionPlayer getLeader() {
+        return leaderUUID == null ? null : leader == null ? (leader = FactionsPro.get().getFactionPlayerMap().get(leaderUUID)) : leader;
     }
 }
