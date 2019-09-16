@@ -1,7 +1,9 @@
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation(libs.paper)
-    implementation(libs.jetbrains_annotations)
+    implementation libs.paper
+    implementation libs.jetbrains_annotations
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0.pr2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0.pr2'
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 }
