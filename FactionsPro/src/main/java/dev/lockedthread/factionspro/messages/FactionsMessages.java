@@ -39,7 +39,11 @@ public enum FactionsMessages implements IMessages {
             "&6Enemies: {enemy-color}{enemies}",
             "&6Truces: {truce-color}{truces}",
             "&6Online ({online-member-count}/{total-member-count}): {relation-color}{online-list}",
-            "&6Offline ({offline-member-count}/{total-member-count}): {relation-color}{offline-list}");
+            "&6Offline ({offline-member-count}/{total-member-count}): {relation-color}{offline-list}"),
+
+    COMMAND_FACTIONS_CLAIM_SUCCESS_SINGLE("&a&lSUCCESS &8» &aYou have successfully claimed a chunk at ({x},{z})"),
+    COMMAND_FACTIONS_CLAIM_SUCCESS_MULTIPLE("&a&lSUCCESS &8» &aYou have successfully claimed {success-amount} chunks and unsuccessfully claimed {unsuccess-amount} chunks"),
+    ;
 
     private final boolean array;
     private String[] unformattedMessage;
