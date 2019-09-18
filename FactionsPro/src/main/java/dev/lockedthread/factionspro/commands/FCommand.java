@@ -103,10 +103,11 @@ public abstract class FCommand {
         }
     }
 
-    private static String replacePlaceholders(String message, String[] placeholders) {
+    private static String replacePlaceholders(String message, Object[] placeholders) {
         System.out.println("message = " + message + ", placeholders = " + Arrays.toString(placeholders));
         for (int i = 0; i < placeholders.length; i += 2) {
-            message = message.replace(placeholders[i], placeholders[i + 1]);
+            String key = placeholders[i] instanceof String ? (String) placeholders[i] : placeholders[i].toString();
+            message = message.replace(key, placeholders[i + 1].toString());
         }
         return message;
     }
@@ -190,7 +191,7 @@ public abstract class FCommand {
         return false;
     }
 
-    public void msg(Enum<? extends IMessages> iMessages, String... placeholders) {
+    public void msg(Enum<? extends IMessages> iMessages, Object... placeholders) {
         if (((IMessages) iMessages).isArrayMessage()) {
             String[] arrayMessage = ((IMessages) iMessages).getArrayMessage();
             for (String message : arrayMessage) {
