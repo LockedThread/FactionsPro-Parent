@@ -116,7 +116,7 @@ public class FactionMap implements Map<Object, Faction> {
     @NotNull
     @Override
     public Set<Entry<Object, Faction>> entrySet() {
-        throw new UnsupportedOperationException("Unable to infer type for Set<<Entry<?, Faction>>");
+        return (Set) this.uuidFactionHashMap.entrySet();
     }
 
     public Set<Entry<UUID, Faction>> uuidFactionEntrySet() {
