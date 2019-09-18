@@ -51,7 +51,9 @@ public class FactionMap implements Map<Object, Faction> {
         if (key instanceof String) {
             return stringFactionHashMap.get(key);
         } else if (key instanceof UUID) {
-            return stringFactionHashMap.get(key);
+            return uuidFactionHashMap.get(key);
+        } else if (key == null) {
+            return null;
         } else {
             throw new RuntimeException("Unable to parse the object key as a string or uuid, tf you expect me to do here?");
         }
